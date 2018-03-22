@@ -19,7 +19,7 @@ function Me:SendComm()
   local db = Main.db.char
   local comm = pl_name..db.patrol_comms.patrolIntro.." "..start_loc.." "..
     db.patrol_comms.clearSignal.." "..db.patrol_comms.enrouteTo.." "..dest_loc
-  SendChatMessage(comm,"GUILD" ,"COMMON")
+  SendChatMessage(comm,"PARTY" ,"COMMON")
 end
 
 function Me:OnClearChanged(val)
@@ -34,6 +34,14 @@ end
 -- Frame declarations
 -- Wrap in BuildPanel Method for toggling
 -------------------------------------------------------------------------------
+function Me:Show()
+  CommPannelFrame:Show()
+end
+
+function Me:Hide()
+  CommPannelFrame:Hide()
+end
+
 function Me:BuildPanel()
   -- frame and widget declarations
   frame = AceGUI:Create("Frame")

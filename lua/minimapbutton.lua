@@ -24,7 +24,9 @@ end
 
 function Me.OnClick(frame, button)
   if button == "LeftButton" then
-    Main.Show()
+    Main.CommPanel:Show()
+  elseif button == "RightButton" then
+    Main.CommPanel:Hide()
   end
 end
 

@@ -5,7 +5,9 @@
 ## Version: 1.0.0
 ## SavedVariables: SCGCommsSaved
 
-includes.xml
-SCGComms.lua
-minimapbutton.lua
-CommPanel.lua
+ui/includes.xml
+lua/SCGComms.lua
+lua/minimapbutton.lua
+lua/CommPanel.lua
+
+ui/ui.xml
