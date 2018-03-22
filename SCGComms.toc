@@ -1,0 +1,11 @@
+## Interface: 70300
+## Title: SCGComms
+## Notes: Stormwind City Comms
+## Author: Darosa-MoonGuard
+## Version: 1.0.0
+## SavedVariables: SCGCommsSaved
+
+includes.xml
+SCGComms.lua
+minimapbutton.lua
+CommPanel.lua
