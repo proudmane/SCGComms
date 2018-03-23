@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 -- Stormwind City Guard Comms
 -- For the Stormwind City Guard Guild - Moon Guard
--- Special thanks to Tammya-MoonGuard 
+-- Special thanks to Tammya-MoonGuard
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
@@ -10,6 +10,8 @@
 local Main             = LibStub("AceAddon-3.0"):NewAddon( "SCGComms",
                             "AceHook-3.0", "AceEvent-3.0" )
 local AceConfig        = LibStub("AceConfig-3.0")
+Main.debug = true
+
 SCGComms = Main
 
 -------------------------------------------------------------------------------
