@@ -10,7 +10,8 @@ Main.CommPanel = Me
 local pl_name
 local start_loc
 local dest_loc
-local panel
+
+local SCGComms_widgets
 
 -------------------------------------------------------------------------------
 -- Functions
@@ -18,7 +19,6 @@ local panel
 function Me:SendComm()
   local hours, minutes = GetGameTime();
   local time_string = hours..":"..minutes
-  print(hours.. " "..minutes)
   if hours < 10 then
     time_string = string.gsub(time_string, hours, "0"..hours)
   end
@@ -39,9 +39,14 @@ function Me:SendComm()
 end
 
 function Me:OnClearChanged(val)
-  for _, v in pairs(offense_controls) do
-    v:SetDisabled(val)
+  for _, v in pairs(Me:GetControlGroups()) do
+    SCGComms_widgets[v]:SetDisabled(val)
   end
+  -- if val == true then
+  --   SCGComms_widgets["key_problems_group"]:Release()
+  -- else
+  --   SCGComms_widgets["key_comm_frame"]:AddChild(SCGComms_widgets["key_problems_group"], SCGComms_widgets["send_comm_button"])
+  -- end
 end
 
 -------------------------------------------------------------------------------
@@ -57,91 +62,121 @@ function Me:Hide()
 end
 
 function Me:BuildPanel()
-  -- frame and widget declarations
-  frame = AceGUI:Create("Frame")
-  pl_name_editbox = AceGUI:Create("EditBox")
-  location_group = AceGUI:Create("SimpleGroup")
-  start_loc_dropdown = AceGUI:Create("Dropdown")
-  dest_loc_dropdown = AceGUI:Create("Dropdown")
-  clear_checkbox = AceGUI:Create("CheckBox")
-  problems_group = AceGUI:Create("InlineGroup")
-  offense_dropdown = AceGUI:Create("Dropdown")
-  assistance_checkbox = AceGUI:Create("CheckBox")
-  resolve_group = AceGUI:Create("InlineGroup")
-  send_comm_button = AceGUI:Create("Button")
+  Me:CreateFrames()
+  Me:SetLayouts()
+  Me:AddChildren()
+  Me:RegisterCallbacks()
+end
 
-  offense_controls = {offense_dropdown, assistance_checkbox}
 
-  -- layouts and sizing
-  frame:SetTitle("SWCG Comms")
-  frame:SetWidth(382)
-  frame:SetLayout("List")
+function Me:CreateFrames()
+  local widgets_group = {
+    key_comm_frame = AceGUI:Create("Frame"),
+    key_pl_name_editbox = AceGUI:Create("EditBox"),
+    key_location_group = AceGUI:Create("SimpleGroup"),
+    key_start_loc_dropdown = AceGUI:Create("Dropdown"),
+    key_dest_loc_dropdown = AceGUI:Create("Dropdown"),
+    key_clear_checkbox = AceGUI:Create("CheckBox"),
+    key_problems_group = AceGUI:Create("InlineGroup"),
+    key_offense_dropdown = AceGUI:Create("Dropdown"),
+    key_assistance_checkbox = AceGUI:Create("CheckBox"),
+    key_resolve_group = AceGUI:Create("InlineGroup"),
+    key_send_comm_button = AceGUI:Create("Button")
+  }
 
-  pl_name_editbox:SetLabel("Patrol Leader's Name:")
-  pl_name_editbox:SetWidth(150)
-  pl_name_editbox:DisableButton(true)
+  -- local SCGComms_widgets_group = {
+  --   key_comm_frame = comm_frame,
+  --   key_pl_name_editbox = pl_name_editbox,
+  --   key_location_group = location_group,
+  --   key_start_loc_dropdown = start_loc_dropdown,
+  --   key_dest_loc_dropdown = dest_loc_dropdown,
+  --   key_clear_checkbox = clear_checkbox,
+  --   key_problems_group = problems_group,
+  --   key_offense_dropdown = offense_dropdown,
+  --   key_assistance_checkbox = assistance_checkbox,
+  --   key_resolve_group = resolve_group,
+  --   key_send_comm_button = send_comm_button
+  -- }
 
-  location_group:SetWidth(350)
-  location_group:SetLayout("Flow")
+  SCGComms_widgets = widgets_group
+end
 
-  start_loc_dropdown:SetText("Select Location")
-  start_loc_dropdown:SetList(LOCATIONS)
-  start_loc_dropdown:SetLabel("Starting Location")
-  start_loc_dropdown:SetWidth(135)
+function Me:GetControlGroups()
+  return {"key_offense_dropdown", "key_assistance_checkbox"}
+end
 
-  dest_loc_dropdown:SetText("Select Location")
-  dest_loc_dropdown:SetList(LOCATIONS)
-  dest_loc_dropdown:SetLabel("Destination Location")
-  dest_loc_dropdown:SetWidth(135)
 
-  clear_checkbox:SetLabel("Clear?")
-  clear_checkbox:SetWidth(75)
-  clear_checkbox:SetType("checkbox")
-  clear_checkbox:ToggleChecked(true)
+function Me:SetLayouts()
+  SCGComms_widgets["key_comm_frame"]:SetTitle("SWCG Comms")
+  SCGComms_widgets["key_comm_frame"]:SetWidth(382)
+  SCGComms_widgets["key_comm_frame"]:SetLayout("List")
 
-  problems_group:SetTitle("Describe the Situation")
-  problems_group:SetWidth(350)
-  problems_group:SetLayout("Flow")
+  SCGComms_widgets["key_pl_name_editbox"]:SetLabel("Patrol Leader's Name:")
+  SCGComms_widgets["key_pl_name_editbox"]:SetWidth(150)
+  SCGComms_widgets["key_pl_name_editbox"]:DisableButton(true)
 
-  offense_dropdown:SetText("Select Offense")
-  offense_dropdown:SetList(PROBLEMS)
-  offense_dropdown:SetLabel("What offense are you investigating")
-  offense_dropdown:SetDisabled(true)
+  SCGComms_widgets["key_location_group"]:SetWidth(350)
+  SCGComms_widgets["key_location_group"]:SetLayout("Flow")
 
-  assistance_checkbox:SetLabel("Do You Require Assistance?")
-  assistance_checkbox:SetType("checkbox")
-  assistance_checkbox:SetDisabled(true)
+  SCGComms_widgets["key_start_loc_dropdown"]:SetText("Select Location")
+  SCGComms_widgets["key_start_loc_dropdown"]:SetList(LOCATIONS)
+  SCGComms_widgets["key_start_loc_dropdown"]:SetLabel("Starting Location")
+  SCGComms_widgets["key_start_loc_dropdown"]:SetWidth(135)
 
-  resolve_group:SetTitle("Resolve the Situation")
-  resolve_group:SetWidth(350)
-  resolve_group:SetLayout("List")
+  SCGComms_widgets["key_dest_loc_dropdown"]:SetText("Select Location")
+  SCGComms_widgets["key_dest_loc_dropdown"]:SetList(LOCATIONS)
+  SCGComms_widgets["key_dest_loc_dropdown"]:SetLabel("Destination Location")
+  SCGComms_widgets["key_dest_loc_dropdown"]:SetWidth(135)
 
-  send_comm_button:SetText("Send Comm")
-  send_comm_button:SetWidth(120)
+  SCGComms_widgets["key_clear_checkbox"]:SetLabel("Clear?")
+  SCGComms_widgets["key_clear_checkbox"]:SetWidth(75)
+  SCGComms_widgets["key_clear_checkbox"]:SetType("checkbox")
+  SCGComms_widgets["key_clear_checkbox"]:ToggleChecked(true)
 
-  -- establish parent-child
-  frame:AddChild(pl_name_editbox)
-  frame:AddChild(location_group)
-  location_group:AddChild(start_loc_dropdown)
-  location_group:AddChild(dest_loc_dropdown)
-  location_group:AddChild(clear_checkbox)
-  problems_group:AddChild(assistance_checkbox)
-  frame:AddChild(problems_group)
-  frame:AddChild(resolve_group)
-  frame:AddChild(send_comm_button)
-  problems_group:AddChild(offense_dropdown)
+  SCGComms_widgets["key_problems_group"]:SetTitle("Describe the Situation")
+  SCGComms_widgets["key_problems_group"]:SetWidth(350)
+  SCGComms_widgets["key_problems_group"]:SetLayout("Flow")
 
+  SCGComms_widgets["key_offense_dropdown"]:SetText("Select Offense")
+  SCGComms_widgets["key_offense_dropdown"]:SetList(PROBLEMS)
+  SCGComms_widgets["key_offense_dropdown"]:SetLabel("What offense are you investigating")
+  SCGComms_widgets["key_offense_dropdown"]:SetDisabled(true)
+
+  SCGComms_widgets["key_assistance_checkbox"]:SetLabel("Do You Require Assistance?")
+  SCGComms_widgets["key_assistance_checkbox"]:SetType("checkbox")
+  SCGComms_widgets["key_assistance_checkbox"]:SetDisabled(true)
+
+  SCGComms_widgets["key_resolve_group"]:SetTitle("Resolve the Situation")
+  SCGComms_widgets["key_resolve_group"]:SetWidth(350)
+  SCGComms_widgets["key_resolve_group"]:SetLayout("List")
+
+  SCGComms_widgets["key_send_comm_button"]:SetText("Send Comm")
+  SCGComms_widgets["key_send_comm_button"]:SetWidth(120)
+end
+
+function Me:AddChildren()
+  SCGComms_widgets["key_comm_frame"]:AddChild(SCGComms_widgets["key_pl_name_editbox"])
+  SCGComms_widgets["key_comm_frame"]:AddChild(SCGComms_widgets["key_location_group"])
+  SCGComms_widgets["key_location_group"]:AddChild(SCGComms_widgets["key_start_loc_dropdown"])
+  SCGComms_widgets["key_location_group"]:AddChild(SCGComms_widgets["key_dest_loc_dropdown"])
+  SCGComms_widgets["key_location_group"]:AddChild(SCGComms_widgets["key_clear_checkbox"])
+  SCGComms_widgets["key_problems_group"]:AddChild(SCGComms_widgets["key_assistance_checkbox"])
+  SCGComms_widgets["key_comm_frame"]:AddChild(SCGComms_widgets["key_problems_group"])
+  SCGComms_widgets["key_comm_frame"]:AddChild(SCGComms_widgets["key_resolve_group"])
+  SCGComms_widgets["key_comm_frame"]:AddChild(SCGComms_widgets["key_send_comm_button"])
+  SCGComms_widgets["key_problems_group"]:AddChild(SCGComms_widgets["key_offense_dropdown"])
+end
+
+function Me:RegisterCallbacks()
   -- register callbacks
-  pl_name_editbox:SetCallback("OnTextChanged",
+  SCGComms_widgets["key_pl_name_editbox"]:SetCallback("OnTextChanged",
       function(widget, event, text) pl_name = text end)
-  start_loc_dropdown:SetCallback("OnValueChanged",
+  SCGComms_widgets["key_start_loc_dropdown"]:SetCallback("OnValueChanged",
       function(widget, event, value) start_loc = LOCATIONS[value] end)
-  dest_loc_dropdown:SetCallback("OnValueChanged",
+  SCGComms_widgets["key_dest_loc_dropdown"]:SetCallback("OnValueChanged",
       function(widget, event, value) dest_loc = LOCATIONS[value] end)
-  clear_checkbox:SetCallback("OnValueChanged",
+  SCGComms_widgets["key_clear_checkbox"]:SetCallback("OnValueChanged",
       function(widget, event, value) Me:OnClearChanged(value) end)
-  send_comm_button:SetCallback("OnClick",
+  SCGComms_widgets["key_send_comm_button"]:SetCallback("OnClick",
       function(widget, event, value) Me:SendComm() end)
-
-    panel = frame
 end
