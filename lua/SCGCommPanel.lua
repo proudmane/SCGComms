@@ -16,24 +16,31 @@ local panel
 -- Functions
 -------------------------------------------------------------------------------
 function Me:SendComm()
+  local hours, minutes = GetGameTime();
+  local time_string = hours..":"..minutes
+  print(hours.. " "..minutes)
+  if hours < 10 then
+    time_string = string.gsub(time_string, hours, "0"..hours)
+  end
+  --
+  if minutes < 10 then
+     time_string = string.gsub(time_string, minutes, "0"..minutes)
+  end
+
   local db = Main.db.char
   local comm = pl_name..db.patrol_comms.patrolIntro.." "..start_loc.." "..
-    db.patrol_comms.clearSignal.." "..db.patrol_comms.enrouteTo.." "..dest_loc
+    db.patrol_comms.clearSignal.." "..db.patrol_comms.enrouteTo.." "..dest_loc..
+    " "..time_string.." hours."
   if Main.debug == true then
     print(comm)
   else
-    SendChatMessage(comm,"PARTY" ,"COMMON")
+    SendChatMessage(comm,"OFFICER" ,"COMMON")
   end
 end
 
 function Me:OnClearChanged(val)
-  if val == true then
-    offense_dropdown:SetDisabled(val)
-    problems_group:Release(problems_group)
-  else
-    offense_dropdown:SetDisabled(val)
-    frame:AddChild(problems_group, send_comm_button)
-    problems_group:AddChild(offense_dropdown)
+  for _, v in pairs(offense_controls) do
+    v:SetDisabled(val)
   end
 end
 
@@ -62,6 +69,8 @@ function Me:BuildPanel()
   assistance_checkbox = AceGUI:Create("CheckBox")
   resolve_group = AceGUI:Create("InlineGroup")
   send_comm_button = AceGUI:Create("Button")
+
+  offense_controls = {offense_dropdown, assistance_checkbox}
 
   -- layouts and sizing
   frame:SetTitle("SWCG Comms")
@@ -101,6 +110,7 @@ function Me:BuildPanel()
 
   assistance_checkbox:SetLabel("Do You Require Assistance?")
   assistance_checkbox:SetType("checkbox")
+  assistance_checkbox:SetDisabled(true)
 
   resolve_group:SetTitle("Resolve the Situation")
   resolve_group:SetWidth(350)
@@ -116,10 +126,10 @@ function Me:BuildPanel()
   location_group:AddChild(dest_loc_dropdown)
   location_group:AddChild(clear_checkbox)
   problems_group:AddChild(assistance_checkbox)
-  --frame:AddChild(problems_group)
+  frame:AddChild(problems_group)
   frame:AddChild(resolve_group)
   frame:AddChild(send_comm_button)
-  --problems_group:AddChild(offense_dropdown)
+  problems_group:AddChild(offense_dropdown)
 
   -- register callbacks
   pl_name_editbox:SetCallback("OnTextChanged",

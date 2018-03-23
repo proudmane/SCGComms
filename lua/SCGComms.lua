@@ -52,7 +52,7 @@ end
 -------------------------------------------------------------------------------
 LOCATIONS = {
   "MQ", "Recluse", "Lamb", "LR",
-  "CD", "Shady Lady", "DD",
+  "CD", "GY", "Shady Lady", "DD",
   "Keg", "OT", "Pig", "TD"
 }
 
