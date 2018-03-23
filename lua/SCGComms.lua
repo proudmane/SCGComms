@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 -- Stormwind City Guard Comms
 -- For the Stormwind City Guard Guild - Moon Guard
--- Special thanks to Tammya-MoonGuard 
+-- Special thanks to Tammya-MoonGuard
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
@@ -10,6 +10,8 @@
 local Main             = LibStub("AceAddon-3.0"):NewAddon( "SCGComms",
                             "AceHook-3.0", "AceEvent-3.0" )
 local AceConfig        = LibStub("AceConfig-3.0")
+Main.debug = true
+
 SCGComms = Main
 
 -------------------------------------------------------------------------------
@@ -54,25 +56,18 @@ LOCATIONS = {
   "Keg", "OT", "Pig", "TD"
 }
 
-LEVEL_ONE_PROBLEMS = {
+PROBLEMS = {
   "Brawling", "Breaking and Entering",
   "Loitering", "Disturbing the Peace",
   "Harrassment", "Misuse of Magic",
   "Trespassing", "Resisting Arrest",
   "Pick Pocketing", "Unarmed Assault",
   "Leaving the Scene of a Crime",
-  "Property Damage"
-}
-
-LEVEL_TWO_PROBLEMS = {
-  "Theft", "Burglary", "Stalking",
-  "Armed Assault", "Magical Assault",
+  "Property Damage", "Theft", "Burglary",
+  "Stalking", "Armed Assault", "Magical Assault",
   "Falsifying Information", "Rioting",
   "Inciting a Riot", "Criminal Association"
 }
-
-print(LEVEL_ONE_PROBLEMS[1])
-print(LEVEL_TWO_PROBLEMS[1])
 
 -------------------------------------------------------------------------------
 function Main:CreateDB()
