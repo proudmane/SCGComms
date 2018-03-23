@@ -27,11 +27,7 @@ function Me:SendComm()
 end
 
 function Me:OnClearChanged(val)
-  if val == true then
-    problems_group:Release()
-  else
-    panel:AddChild(problems_group, send_comm_button)
-  end
+  level_one_dropdown:SetDisabled(val)
 end
 
 -------------------------------------------------------------------------------
@@ -88,11 +84,12 @@ function Me:BuildPanel()
 
   problems_group:SetTitle("Describe the Situation")
   problems_group:SetWidth(350)
-  problems_group:SetLayout("Flow")
+  problems_group:SetLayout("List")
 
   level_one_dropdown:SetText("Select...")
-  level_one_dropdown:SetList(LEVEL_ONE_PROBLEMS)
-  level_one_dropdown:SetLabel("What level of offense?")
+  level_one_dropdown:SetList(PROBLEMS)
+  level_one_dropdown:SetLabel("What offense are you investigating?")
+  level_one_dropdown:SetDisabled(true)
 
   send_comm_button:SetText("Send Comm")
   send_comm_button:SetWidth(120)
@@ -103,11 +100,12 @@ function Me:BuildPanel()
   location_group:AddChild(start_loc_dropdown)
   location_group:AddChild(dest_loc_dropdown)
   location_group:AddChild(clear_checkbox)
+  problems_group:AddChild(level_one_dropdown)
+  frame:AddChild(problems_group)
   frame:AddChild(send_comm_button)
   problems_group:AddChild(level_one_dropdown)
 
   -- register callbacks
-  frame:SetCallback("OnClose", function(widget) AceGUI:Release(widget) end)
   pl_name_editbox:SetCallback("OnTextChanged",
       function(widget, event, text) pl_name = text end)
   start_loc_dropdown:SetCallback("OnValueChanged",

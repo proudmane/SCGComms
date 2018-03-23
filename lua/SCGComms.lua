@@ -56,25 +56,18 @@ LOCATIONS = {
   "Keg", "OT", "Pig", "TD"
 }
 
-LEVEL_ONE_PROBLEMS = {
+PROBLEMS = {
   "Brawling", "Breaking and Entering",
   "Loitering", "Disturbing the Peace",
   "Harrassment", "Misuse of Magic",
   "Trespassing", "Resisting Arrest",
   "Pick Pocketing", "Unarmed Assault",
   "Leaving the Scene of a Crime",
-  "Property Damage"
-}
-
-LEVEL_TWO_PROBLEMS = {
-  "Theft", "Burglary", "Stalking",
-  "Armed Assault", "Magical Assault",
+  "Property Damage", "Theft", "Burglary",
+  "Stalking", "Armed Assault", "Magical Assault",
   "Falsifying Information", "Rioting",
   "Inciting a Riot", "Criminal Association"
 }
-
-print(LEVEL_ONE_PROBLEMS[1])
-print(LEVEL_TWO_PROBLEMS[1])
 
 -------------------------------------------------------------------------------
 function Main:CreateDB()

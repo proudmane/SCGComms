@@ -9,5 +9,3 @@ includes.xml
 lua/SCGComms.lua
 lua/minimapbutton.lua
 lua/SCGCommPanel.lua
-
-ui/ui.xml
