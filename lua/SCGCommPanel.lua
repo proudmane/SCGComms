@@ -27,7 +27,7 @@ function Me:SendComm()
 end
 
 function Me:OnClearChanged(val)
-  level_one_dropdown:SetDisabled(val)
+  offense_dropdown:SetDisabled(val)
 end
 
 -------------------------------------------------------------------------------
@@ -52,30 +52,31 @@ function Me:BuildPanel()
   dest_loc_dropdown = AceGUI:Create("Dropdown")
   clear_checkbox = AceGUI:Create("CheckBox")
   problems_group = AceGUI:Create("InlineGroup")
-  level_one_dropdown = AceGUI:Create("Dropdown")
+  offense_dropdown = AceGUI:Create("Dropdown")
+  resolve_group = AceGUI:Create("InlineGroup")
   send_comm_button = AceGUI:Create("Button")
 
   -- layouts and sizing
   frame:SetTitle("SWCG Comms")
-  frame:SetWidth(400)
+  frame:SetWidth(382)
   frame:SetLayout("List")
 
   pl_name_editbox:SetLabel("Patrol Leader's Name:")
   pl_name_editbox:SetWidth(150)
   pl_name_editbox:DisableButton(true)
 
-  location_group:SetWidth(400)
+  location_group:SetWidth(350)
   location_group:SetLayout("Flow")
 
   start_loc_dropdown:SetText("Select Location")
   start_loc_dropdown:SetList(LOCATIONS)
   start_loc_dropdown:SetLabel("Starting Location")
-  start_loc_dropdown:SetWidth(125)
+  start_loc_dropdown:SetWidth(135)
 
   dest_loc_dropdown:SetText("Select Location")
   dest_loc_dropdown:SetList(LOCATIONS)
   dest_loc_dropdown:SetLabel("Destination Location")
-  dest_loc_dropdown:SetWidth(125)
+  dest_loc_dropdown:SetWidth(135)
 
   clear_checkbox:SetLabel("Clear?")
   clear_checkbox:SetWidth(75)
@@ -86,10 +87,14 @@ function Me:BuildPanel()
   problems_group:SetWidth(350)
   problems_group:SetLayout("List")
 
-  level_one_dropdown:SetText("Select...")
-  level_one_dropdown:SetList(PROBLEMS)
-  level_one_dropdown:SetLabel("What offense are you investigating?")
-  level_one_dropdown:SetDisabled(true)
+  resolve_group:SetTitle("Resolve the Situation")
+  resolve_group:SetWidth(350)
+  resolve_group:SetLayout("List")
+
+  offense_dropdown:SetText("Select Offense")
+  offense_dropdown:SetList(PROBLEMS)
+  offense_dropdown:SetLabel("What offense are you investigating")
+  offense_dropdown:SetDisabled(true)
 
   send_comm_button:SetText("Send Comm")
   send_comm_button:SetWidth(120)
@@ -100,10 +105,11 @@ function Me:BuildPanel()
   location_group:AddChild(start_loc_dropdown)
   location_group:AddChild(dest_loc_dropdown)
   location_group:AddChild(clear_checkbox)
-  problems_group:AddChild(level_one_dropdown)
+  problems_group:AddChild(offense_dropdown)
   frame:AddChild(problems_group)
+  frame:AddChild(resolve_group)
   frame:AddChild(send_comm_button)
-  problems_group:AddChild(level_one_dropdown)
+  --problems_group:AddChild(offense_dropdown)
 
   -- register callbacks
   pl_name_editbox:SetCallback("OnTextChanged",
