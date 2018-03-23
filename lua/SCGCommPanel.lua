@@ -27,7 +27,14 @@ function Me:SendComm()
 end
 
 function Me:OnClearChanged(val)
-  offense_dropdown:SetDisabled(val)
+  if val == true then
+    offense_dropdown:SetDisabled(val)
+    problems_group:Release(problems_group)
+  else
+    offense_dropdown:SetDisabled(val)
+    frame:AddChild(problems_group, send_comm_button)
+    problems_group:AddChild(offense_dropdown)
+  end
 end
 
 -------------------------------------------------------------------------------
@@ -49,10 +56,10 @@ function Me:BuildPanel()
   location_group = AceGUI:Create("SimpleGroup")
   start_loc_dropdown = AceGUI:Create("Dropdown")
   dest_loc_dropdown = AceGUI:Create("Dropdown")
-  dest_loc_dropdown = AceGUI:Create("Dropdown")
   clear_checkbox = AceGUI:Create("CheckBox")
   problems_group = AceGUI:Create("InlineGroup")
   offense_dropdown = AceGUI:Create("Dropdown")
+  assistance_checkbox = AceGUI:Create("CheckBox")
   resolve_group = AceGUI:Create("InlineGroup")
   send_comm_button = AceGUI:Create("Button")
 
@@ -85,16 +92,19 @@ function Me:BuildPanel()
 
   problems_group:SetTitle("Describe the Situation")
   problems_group:SetWidth(350)
-  problems_group:SetLayout("List")
-
-  resolve_group:SetTitle("Resolve the Situation")
-  resolve_group:SetWidth(350)
-  resolve_group:SetLayout("List")
+  problems_group:SetLayout("Flow")
 
   offense_dropdown:SetText("Select Offense")
   offense_dropdown:SetList(PROBLEMS)
   offense_dropdown:SetLabel("What offense are you investigating")
   offense_dropdown:SetDisabled(true)
+
+  assistance_checkbox:SetLabel("Do You Require Assistance?")
+  assistance_checkbox:SetType("checkbox")
+
+  resolve_group:SetTitle("Resolve the Situation")
+  resolve_group:SetWidth(350)
+  resolve_group:SetLayout("List")
 
   send_comm_button:SetText("Send Comm")
   send_comm_button:SetWidth(120)
@@ -105,8 +115,8 @@ function Me:BuildPanel()
   location_group:AddChild(start_loc_dropdown)
   location_group:AddChild(dest_loc_dropdown)
   location_group:AddChild(clear_checkbox)
-  problems_group:AddChild(offense_dropdown)
-  frame:AddChild(problems_group)
+  problems_group:AddChild(assistance_checkbox)
+  --frame:AddChild(problems_group)
   frame:AddChild(resolve_group)
   frame:AddChild(send_comm_button)
   --problems_group:AddChild(offense_dropdown)

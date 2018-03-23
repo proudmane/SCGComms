@@ -57,16 +57,27 @@ LOCATIONS = {
 }
 
 PROBLEMS = {
+  "Pos. of Illegal Goods", "Propaganda",
+  "Lock Picking Devices", "Bloodthistle",
+  "Felweed", "Demon's Blood", "Plague",
+  "Discharging a Weapon", "Gambling",
+  "Vagrancy", "Possesssion of a Demon",
+  "Unlawful Gatherinng",
   "Brawling", "Breaking and Entering",
   "Loitering", "Disturbing the Peace",
   "Harrassment", "Misuse of Magic",
   "Trespassing", "Resisting Arrest",
   "Pick Pocketing", "Unarmed Assault",
-  "Leaving the Scene of a Crime",
+  "Leaving Crime Scene",
   "Property Damage", "Theft", "Burglary",
   "Stalking", "Armed Assault", "Magical Assault",
   "Falsifying Information", "Rioting",
-  "Inciting a Riot", "Criminal Association"
+  "Inciting a Riot", "Criminal Association",
+  "Dist. of Illegal Goods", "Embezzlement",
+  "Bribery", "Robbery", "Public Endangerment",
+  "Impersonating an Agent of the Crown",
+  "Murder", "Treason", "Slavery", "Sex Crimes",
+  "Kidnapping", "Jailbreaking"
 }
 
 -------------------------------------------------------------------------------
