@@ -1,10 +1,17 @@
 local Main = SCGComms
 local Me = {}
+
 Main.MinimapButton = Me
-print("testing 12")
+
+-------------------------------------------------------------------------------
+-- attributes
+-------------------------------------------------------------------------------
 local LDB    = LibStub:GetLibrary("LibDataBroker-1.1")
 local DBIcon = LibStub:GetLibrary("LibDBIcon-1.0")
 
+-------------------------------------------------------------------------------
+-- Initialization
+-------------------------------------------------------------------------------
 function Me.Init()
   print("init called")
   Me.data = LDB:NewDataObject("SCGComms", {
@@ -18,6 +25,9 @@ function Me.Init()
 
 end
 
+-------------------------------------------------------------------------------
+-- Events
+-------------------------------------------------------------------------------
 function Me.OnLoad()
   DBIcon:Register("SCGComms", Me.data, Main.db.char.minimapicon)
 end
@@ -26,7 +36,7 @@ function Me.OnClick(frame, button)
   if button == "LeftButton" then
     Main.CommPanel:Show()
   elseif button == "RightButton" then
-    Main.ConfigPanel.Show()
+    Main.ConfigPanel:Show()
   end
 end
 

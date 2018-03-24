@@ -7,10 +7,10 @@
 -------------------------------------------------------------------------------
 -- Includes, libs, etc.
 -------------------------------------------------------------------------------
-local Main             = LibStub("AceAddon-3.0"):NewAddon( "SCGComms",
-                            "AceHook-3.0", "AceEvent-3.0" )
-local AceConfig        = LibStub("AceConfig-3.0")
-Main.debug = false
+local Main      = LibStub("AceAddon-3.0"):NewAddon( "SCGComms",
+                    "AceHook-3.0", "AceEvent-3.0" )
+local AceConfig = LibStub("AceConfig-3.0")
+Main.debug = true
 
 SCGComms = Main
 
@@ -20,16 +20,17 @@ SCGComms = Main
 local defaults = {
   char = {
     patrol_comms = {
-      enabled = true,
-      patrolIntro = "'s patrol.",
-      clearSignal = "clear.",
-      enrouteTo = "Enroute to"
+      patrolIntro = "[name]'s patrol.",
+      clearSignal = "[start_loc] clear.",
+      enrouteTo = "Enroute to [dest_loc]."
     },
     minimapicon = {
       hide = false
     }
   }
 }
+
+SCGComms_defaults = defaults
 
 -------------------------------------------------------------------------------
 -- Initialization and Post Initialization
@@ -43,15 +44,19 @@ function Main:OnEnable()
   Main.MinimapButton.OnLoad()
 end
 
-function Main.Show()
-  Main.CommPanel:BuildPanel()
+function Main:SetDebug(bool)
+  Main.debug = bool
+end
+
+function Main:CreateDB()
+  Main.db = LibStub("AceDB-3.0"):New("SCGCommsSaved", defaults)
 end
 
 -------------------------------------------------------------------------------
--- Constants, attributes
+-- Constants
 -------------------------------------------------------------------------------
 LOCATIONS = {
-  "MQ", "Recluse", "Lamb", "LR",
+  "Stocks", "MQ", "Recluse", "Lamb", "LR",
   "CD", "GY", "Shady Lady", "DD",
   "Keg", "OT", "Pig", "TD"
 }
@@ -79,8 +84,3 @@ PROBLEMS = {
   "Murder", "Treason", "Slavery", "Sex Crimes",
   "Kidnapping", "Jailbreaking"
 }
-
--------------------------------------------------------------------------------
-function Main:CreateDB()
-  Main.db = LibStub("AceDB-3.0"):New("SCGCommsSaved", defaults)
-end
