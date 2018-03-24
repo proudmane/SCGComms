@@ -37,6 +37,11 @@ SCGComms_defaults = defaults
 -------------------------------------------------------------------------------
 function Main:OnInitialize()
   Main.MinimapButton.Init()
+  if Main.debug == true then
+    print("SCGComms Debug Mode: On")
+  end
+
+  Main.CommPanel:Show()
 end
 
 function Main:OnEnable()
@@ -46,6 +51,11 @@ end
 
 function Main:SetDebug(bool)
   Main.debug = bool
+  if bool == true then
+    print("SCGComms Debug Mode: On")
+  else
+    print("SCGComms Debug Mode: Off")
+  end
 end
 
 function Main:CreateDB()
