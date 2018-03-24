@@ -6,6 +6,7 @@
 ## SavedVariables: SCGCommsSaved
 
 embeds.xml
-lua\SCGComms.lua
+lua\Main.lua
 lua\minimapbutton.lua
+lua\SCGConfigPanel.lua
 lua\SCGCommPanel.lua

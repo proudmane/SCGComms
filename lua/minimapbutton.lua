@@ -26,7 +26,7 @@ function Me.OnClick(frame, button)
   if button == "LeftButton" then
     Main.CommPanel:Show()
   elseif button == "RightButton" then
-    Main.CommPanel:Hide()
+    Main.ConfigPanel.Show()
   end
 end
 
@@ -45,7 +45,10 @@ function Me.OnEnter(frame)
   GameTooltip:SetOwner( frame, "ANCHOR_NONE" )
   GameTooltip:SetPoint( tooltip_vertical..horizontal, frame, anchor_vertical..horizontal )
   GameTooltip:AddLine("SCG Comms")
-  GameTooltip:AddLine("Left click to open comm system.")
+  GameTooltip:AddLine("Left-click to open comm system.")
+  GameTooltip:AddLine(" ")
+  GameTooltip:AddLine("Right-click to open the config")
+  GameTooltip:AddLine("and set your accent.")
 	GameTooltip:Show()
 end
 
