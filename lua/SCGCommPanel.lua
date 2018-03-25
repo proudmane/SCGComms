@@ -21,6 +21,18 @@ function Me:SendComm(comm_string)
   SendChatMessage(comm_string,"OFFICER" ,"COMMON")
 end
 
+function Me:OnStartPatrolClicked()
+  local time_string = Me:BuildTimeString()
+  local db = Main.db.char.patrol_comms
+  local comm_string = "[name]'s patrol starting at [start_loc] enroute to [dest_loc]. [time] hours."
+  --local enroute = string.gsub(db.enrouteTo, "%[dest_loc%]", dest_loc)
+  --local comm = intro.." "..clear.." "..enroute.." "..time_string.." hours."
+  if Main.debug == true then
+    print("Comm String: "..comm_string)
+  else
+    Me:SendComm(comm)
+  end
+end
 function Me:OnUpdatePatrolClicked()
   local time_string = Me:BuildTimeString()
   local db = Main.db.char.patrol_comms
@@ -73,12 +85,14 @@ end
 function Me:OnClockwiseChanged(widget, val)
   if val == true and w["counter_clock_radio"]:GetValue() == true then
     w["counter_clock_radio"]:ToggleChecked()
+    patrol_type = "clockwise"
   end
 end
 
 function Me:OnCounterChanged(widget, val)
   if val == true and w["clockwise_radio"]:GetValue() == true then
     w["clockwise_radio"]:ToggleChecked()
+    patrol_type = "counter-clockwise"
   end
 end
 -------------------------------------------------------------------------------
@@ -95,22 +109,8 @@ function Me:CommFrame()
   w[my_key]:SetWidth(382)
   w[my_key]:SetHeight(365)
   w[my_key]:SetLayout("Fill")
-
-  -- Me:ScrollFrameContainer(my_key)
   Me:ScrollFrame(my_key)
 end
-
--- function Me:ScrollFrameContainer(parent_key)
---   local my_key = "scroll_frame_container"
---   w[my_key] = AceGUI:Create("SimpleGroup")
---   w[my_key]:SetFullWidth(true)
---   w[my_key]:SetFullHeight(true)
---   w[my_key]:SetLayout("Fill")
---
---   Me:ScrollFrame(my_key)
---
---   w[parent_key]:AddChild(w[my_key])
--- end
 
 function Me:ScrollFrame(parent_key)
   local my_key = "scroll_frame"
@@ -265,6 +265,9 @@ function Me:StartPatrolBtn(parent_key)
   w[my_key]:SetText("Start Patrol")
   w[my_key]:SetWidth(110)
 
+  w[my_key]:SetCallback("OnClick",
+      function() Me:OnStartPatrolClicked() end)
+
   w[parent_key]:AddChild(w[my_key])
 end
 
@@ -343,64 +346,6 @@ function Me:UpdatePatrolBtn(parent_key)
   w[parent_key]:AddChild(w[my_key])
 end
 
--- function Me:CreateFrames()
---   local w_group = {
---     comm_frame = AceGUI:Create("Frame"),
---     pl_name_editbox = AceGUI:Create("EditBox"),
---     start_patrol_group = AceGUI:Create("InlineGroup"),
---     clock_radio_group = AceGUI:Create("SimpleGroup"),
---     patrol_type = AceGUI:Create("Label"),
---     counter_clock_radio = AceGUI:Create("CheckBox"),
---     clockwise_radio = AceGUI:Create("CheckBox"),
---     start_btn_group = AceGUI:Create("SimpleGroup"),
---     initiate_dropdown = AceGUI:Create("Dropdown"),
---     start_patrol_button = AceGUI:Create("Button"),
---     location_group = AceGUI:Create("SimpleGroup"),
---     start_loc_dropdown = AceGUI:Create("Dropdown"),
---     dest_loc_dropdown = AceGUI:Create("Dropdown"),
---     clear_checkbox = AceGUI:Create("CheckBox"),
---     problems_group = AceGUI:Create("InlineGroup"),
---     offense_dropdown = AceGUI:Create("Dropdown"),
---     assistance_checkbox = AceGUI:Create("CheckBox"),
---     resolve_group = AceGUI:Create("InlineGroup"),
---     update_patrol_button = AceGUI:Create("Button")
---   }
---
---   w = w_group
--- end
-
 function Me:GetControlGroups()
   return {"offense_dropdown", "assistance_checkbox"}
 end
-
--- function Me:AddChildren()
---
---   w["start_patrol_group"]:AddChild(w["clock_radio_group"])
---   w["clock_radio_group"]:AddChild(w["patrol_type"])
---   w["clock_radio_group"]:AddChild(w["clockwise_radio"])
---   w["clock_radio_group"]:AddChild(w["counter_clock_radio"])
---   w["start_patrol_group"]:AddChild(w["start_btn_group"])
---   w["start_btn_group"]:AddChild(w["initiate_dropdown"])
---   w["start_btn_group"]:AddChild(w["start_patrol_button"])
---   w["comm_frame"]:AddChild(w["start_patrol_group"])
---   w["comm_frame"]:AddChild(w["location_group"])
---   w["location_group"]:AddChild(w["start_loc_dropdown"])
---   w["location_group"]:AddChild(w["dest_loc_dropdown"])
---   w["location_group"]:AddChild(w["clear_checkbox"])
---   w["problems_group"]:AddChild(w["assistance_checkbox"])
---   w["comm_frame"]:AddChild(w["problems_group"])
---   w["comm_frame"]:AddChild(w["resolve_group"])
---   w["comm_frame"]:AddChild(w["update_patrol_button"])
---   w["problems_group"]:AddChild(w["offense_dropdown"])
--- end
---
--- function Me:RegisterCallbacks()
---   -- register callbacks
---
---
---
---
---
---
---
--- end
