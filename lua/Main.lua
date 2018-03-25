@@ -22,17 +22,18 @@ local defaults = {
     patrol_comms = {
       startPatrol = "[name]'s patrol. Starting a [patrol_direction] patrol,"
       .." ".."Beginning at [start_location]. [time] hours.",
-      updatePatrolClear = "[name]'s patrol. [start_location] clear, enroute to"
-      .." ".."[dest_location]. [time] hours.",
+      updatePatrolClear = "[name]'s patrol. [current_location] clear, enroute to"
+      .." ".."[next_location]. [time] hours.",
       updatePatrolOffense = "[name]'s patrol. Currently dealing with a case of"
       .." ".."[offense] at [current_location]. No backup needed. [time] hours.",
       updatePatrolAsst = "[name]'s patrol. Currently dealing with a case of"
       .." ".."[offense] at [current_location]. Backup requested. [time] hours.",
-      endPatrol = "[name]'s patrol ending at [dest_location]. [time] hours."
+      endPatrol = "[name]'s patrol ending at [end_location]. [time] hours."
     },
     minimapicon = {
       hide = false
-    }
+    },
+    commPanelDimensions = { x = 420, y = 520 }
   }
 }
 
