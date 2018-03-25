@@ -8,10 +8,11 @@ Main.CommPanel = Me
 -- attributes
 -------------------------------------------------------------------------------
 local pl_name
+local patrol_type
 local start_loc
 local dest_loc
 
-local w
+local w = {}
 
 -------------------------------------------------------------------------------
 -- Functions
@@ -70,178 +71,336 @@ function Me:OnClearChanged(val)
 end
 
 function Me:OnClockwiseChanged(widget, val)
-  if val == true then
+  if val == true and w["counter_clock_radio"]:GetValue() == true then
     w["counter_clock_radio"]:ToggleChecked()
   end
 end
 
 function Me:OnCounterChanged(widget, val)
-  -- if val == true then
-  --   w["clockwise_radio"]:ToggleChecked()
-  -- end
+  if val == true and w["clockwise_radio"]:GetValue() == true then
+    w["clockwise_radio"]:ToggleChecked()
+  end
 end
 -------------------------------------------------------------------------------
 -- Frame Constructor
 -------------------------------------------------------------------------------
 function Me:Show()
-  Me:BuildPanel()
+  Me:CommFrame()
 end
 
-function Me:Hide()
-  w["key_comm_frame"]:Hide()
+function Me:CommFrame()
+  local my_key = "comm_frame"
+  w[my_key] = AceGUI:Create("Frame")
+  w[my_key]:SetTitle("SWCG Comms")
+  w[my_key]:SetWidth(382)
+  w[my_key]:SetHeight(365)
+  w[my_key]:SetLayout("Fill")
+
+  -- Me:ScrollFrameContainer(my_key)
+  Me:ScrollFrame(my_key)
 end
 
-function Me:BuildPanel()
-  Me:CreateFrames()
-  Me:SetLayouts()
-  Me:AddChildren()
-  Me:RegisterCallbacks()
+-- function Me:ScrollFrameContainer(parent_key)
+--   local my_key = "scroll_frame_container"
+--   w[my_key] = AceGUI:Create("SimpleGroup")
+--   w[my_key]:SetFullWidth(true)
+--   w[my_key]:SetFullHeight(true)
+--   w[my_key]:SetLayout("Fill")
+--
+--   Me:ScrollFrame(my_key)
+--
+--   w[parent_key]:AddChild(w[my_key])
+-- end
+
+function Me:ScrollFrame(parent_key)
+  local my_key = "scroll_frame"
+  w[my_key] = AceGUI:Create("ScrollFrame")
+  w[my_key]:SetLayout("Flow")
+  w[my_key]:SetFullWidth(true)
+  w[my_key]:SetFullHeight(true)
+
+  Me:LeaderName(my_key)
+  Me:StartPatrolGroup(my_key)
+  Me:UpdatePatrolGroup(my_key)
+  Me:DescribeGroup(my_key)
+  Me:ResolveGroup(my_key)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:StartPatrolGroup(parent_key)
+  local my_key = "start_patrol_group"
+  w[my_key] = AceGUI:Create("InlineGroup")
+  w[my_key]:SetTitle("Start Patrol")
+  w[my_key]:SetLayout("List")
+  w[my_key]:SetWidth(350)
+
+  Me:ClockRadioGroup(my_key)
+  Me:StartBtnGroup(my_key)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:UpdatePatrolGroup(parent_key)
+  local my_key = "update_patrol_group"
+  w[my_key] = AceGUI:Create("InlineGroup")
+  w[my_key]:SetTitle("Update Patrol")
+  w[my_key]:SetWidth(350)
+  w[my_key]:SetLayout("Flow")
+
+  Me:StartLocDropdown(my_key)
+  Me:DestLocDropdown(my_key)
+  Me:ClearCheckBox(my_key)
+  Me:UpdatePatrolBtn(my_key)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:DescribeGroup(parent_key)
+  local my_key = "describe_group"
+  w[my_key] = AceGUI:Create("InlineGroup")
+  w[my_key]:SetTitle("Describe the Situation")
+  w[my_key]:SetWidth(350)
+  w[my_key]:SetLayout("Flow")
+
+  Me:OffenseDropdown(my_key)
+  Me:AssistanceCheckBox(my_key)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:ResolveGroup(parent_key)
+  local my_key = "resolve_group"
+  w[my_key] = AceGUI:Create("InlineGroup")
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:StartBtnGroup(parent_key)
+  local my_key = "start_btn_group"
+  w[my_key] = AceGUI:Create("SimpleGroup")
+  w[my_key]:SetLayout("Flow")
+  w[my_key]:SetFullWidth(true)
+
+  Me:InitiateDropdown(my_key)
+  Me:StartPatrolBtn(my_key)
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:ClockRadioGroup(parent_key)
+  local my_key = "clock_radio_group"
+  w[my_key] = AceGUI:Create("SimpleGroup")
+  w[my_key]:SetLayout("Flow")
+  w[my_key]:SetFullWidth(true)
+
+  Me:PatrolTypeText(my_key)
+  Me:ClockwiseRadio(my_key)
+  Me:CounterRadio(my_key)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:LeaderName(parent_key) -- pl_name
+  local my_key = "pl_name_editbox"
+  w[my_key] = AceGUI:Create("EditBox")
+  w[my_key]:SetLabel("Patrol Leader's Name:")
+  w[my_key]:SetWidth(150)
+  w[my_key]:DisableButton(true)
+  w[my_key]:SetCallback("OnTextChanged",
+      function(widget, event, text) pl_name = text end)
+  w[parent_key]:AddChild(w[my_key])
 end
 
 
-function Me:CreateFrames()
-  local w_group = {
-    comm_frame = AceGUI:Create("Frame"),
-    pl_name_editbox = AceGUI:Create("EditBox"),
-    start_patrol_group = AceGUI:Create("InlineGroup"),
-    clock_radio_group = AceGUI:Create("SimpleGroup"),
-    patrol_type = AceGUI:Create("Label"),
-    counter_clock_radio = AceGUI:Create("CheckBox"),
-    clockwise_radio = AceGUI:Create("CheckBox"),
-    start_btn_group = AceGUI:Create("SimpleGroup"),
-    initiate_dropdown = AceGUI:Create("Dropdown"),
-    start_patrol_button = AceGUI:Create("Button"),
-    location_group = AceGUI:Create("SimpleGroup"),
-    start_loc_dropdown = AceGUI:Create("Dropdown"),
-    dest_loc_dropdown = AceGUI:Create("Dropdown"),
-    clear_checkbox = AceGUI:Create("CheckBox"),
-    problems_group = AceGUI:Create("InlineGroup"),
-    offense_dropdown = AceGUI:Create("Dropdown"),
-    assistance_checkbox = AceGUI:Create("CheckBox"),
-    resolve_group = AceGUI:Create("InlineGroup"),
-    update_patrol_button = AceGUI:Create("Button")
-  }
+function Me:PatrolTypeText(parent_key) -- label
+  local my_key = "patrol_type_text"
+  w[my_key] = AceGUI:Create("Label")
+  w[my_key]:SetText("Select Patrol Type:")
+  w[my_key]:SetFullWidth(true)
 
-  w = w_group
+  w[parent_key]:AddChild(w[my_key])
 end
+
+function Me:ClockwiseRadio(parent_key)
+  local my_key = "clockwise_radio"
+  w[my_key] = AceGUI:Create("CheckBox")
+  w[my_key]:SetLabel("Clockwise")
+  w[my_key]:SetType("radio")
+  w[my_key]:SetWidth(100)
+  w[my_key]:ToggleChecked(true)
+
+  w[my_key]:SetCallback("OnValueChanged",
+      function(widget, event, value) Me:OnClockwiseChanged(widget, value) end)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:CounterRadio(parent_key)
+  local my_key = "counter_clock_radio"
+  w[my_key] = AceGUI:Create("CheckBox")
+  w[my_key]:SetLabel("Counter")
+  w[my_key]:SetType("radio")
+  w[my_key]:SetWidth(100)
+
+  w[my_key]:SetCallback("OnValueChanged",
+      function(widget, event, value) Me:OnCounterChanged(widget, value) end)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:InitiateDropdown(parent_key)
+  local my_key = "initiate_dropdown"
+  w[my_key] = AceGUI:Create("Dropdown")
+  w[my_key]:SetText("Select Location")
+  w[my_key]:SetList(LOCATIONS)
+  w[my_key]:SetLabel("Patrol Start Location")
+  w[my_key]:SetWidth(135)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:StartPatrolBtn(parent_key)
+  local my_key = "start_patrol_button"
+  w[my_key] = AceGUI:Create("Button")
+  w[my_key]:SetText("Start Patrol")
+  w[my_key]:SetWidth(110)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:StartLocDropdown(parent_key)
+  local my_key = "start_loc_dropdown"
+  w[my_key] = AceGUI:Create("Dropdown")
+  w[my_key]:SetText("Select Location")
+  w[my_key]:SetList(LOCATIONS)
+  w[my_key]:SetLabel("Starting Location")
+  w[my_key]:SetWidth(130)
+
+  w[my_key]:SetCallback("OnValueChanged",
+      function(widget, event, value) start_loc = LOCATIONS[value] end)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:DestLocDropdown(parent_key)
+  local my_key = "dest_loc_dropdown"
+  w[my_key] = AceGUI:Create("Dropdown")
+  w[my_key]:SetText("Select Location")
+  w[my_key]:SetList(LOCATIONS)
+  w[my_key]:SetLabel("Destination Location")
+  w[my_key]:SetWidth(130)
+
+  w[my_key]:SetCallback("OnValueChanged",
+      function(widget, event, value) dest_loc = LOCATIONS[value] end)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:ClearCheckBox(parent_key)
+  local my_key = "clear_checkbox"
+  w[my_key] = AceGUI:Create("CheckBox")
+  w[my_key]:SetLabel("Clear?")
+  w[my_key]:SetWidth(75)
+  w[my_key]:SetType("checkbox")
+  w[my_key]:ToggleChecked(true)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:OffenseDropdown(parent_key)
+  local my_key = "offense_dropdown"
+  w[my_key] = AceGUI:Create("Dropdown")
+  w[my_key]:SetText("Select Offense")
+  w[my_key]:SetList(PROBLEMS)
+  w[my_key]:SetLabel("What offense are you investigating")
+  w[my_key]:SetDisabled(true)
+
+  w[my_key]:SetCallback("OnValueChanged",
+      function(widget, event, value) Me:OnClearChanged(value) end)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:AssistanceCheckBox(parent_key)
+  local my_key = "assistance_checkbox"
+  w[my_key] = AceGUI:Create("CheckBox")
+  w[my_key]:SetLabel("Do You Require Assistance?")
+  w[my_key]:SetType("checkbox")
+  w[my_key]:SetDisabled(true)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:UpdatePatrolBtn(parent_key)
+  local my_key = "update_patrol_button"
+  w[my_key] = AceGUI:Create("Button")
+  w[my_key]:SetText("Update Patrol")
+  w[my_key]:SetWidth(110)
+
+  w[my_key]:SetCallback("OnClick",
+      function(widget, event, value) Me:OnUpdatePatrolClicked() end)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+-- function Me:CreateFrames()
+--   local w_group = {
+--     comm_frame = AceGUI:Create("Frame"),
+--     pl_name_editbox = AceGUI:Create("EditBox"),
+--     start_patrol_group = AceGUI:Create("InlineGroup"),
+--     clock_radio_group = AceGUI:Create("SimpleGroup"),
+--     patrol_type = AceGUI:Create("Label"),
+--     counter_clock_radio = AceGUI:Create("CheckBox"),
+--     clockwise_radio = AceGUI:Create("CheckBox"),
+--     start_btn_group = AceGUI:Create("SimpleGroup"),
+--     initiate_dropdown = AceGUI:Create("Dropdown"),
+--     start_patrol_button = AceGUI:Create("Button"),
+--     location_group = AceGUI:Create("SimpleGroup"),
+--     start_loc_dropdown = AceGUI:Create("Dropdown"),
+--     dest_loc_dropdown = AceGUI:Create("Dropdown"),
+--     clear_checkbox = AceGUI:Create("CheckBox"),
+--     problems_group = AceGUI:Create("InlineGroup"),
+--     offense_dropdown = AceGUI:Create("Dropdown"),
+--     assistance_checkbox = AceGUI:Create("CheckBox"),
+--     resolve_group = AceGUI:Create("InlineGroup"),
+--     update_patrol_button = AceGUI:Create("Button")
+--   }
+--
+--   w = w_group
+-- end
 
 function Me:GetControlGroups()
   return {"offense_dropdown", "assistance_checkbox"}
 end
 
-
-function Me:SetLayouts()
-  w["comm_frame"]:SetTitle("SWCG Comms")
-  w["comm_frame"]:SetWidth(382)
-  w["comm_frame"]:SetLayout("List")
-
-  w["start_patrol_group"]:SetTitle("Start Patrol")
-  w["start_patrol_group"]:SetLayout("List")
-  w["start_patrol_group"]:SetFullWidth(true)
-
-  w["pl_name_editbox"]:SetLabel("Patrol Leader's Name:")
-  w["pl_name_editbox"]:SetWidth(150)
-  w["pl_name_editbox"]:DisableButton(true)
-
-  w["clock_radio_group"]:SetLayout("Flow")
-  w["clock_radio_group"]:SetFullWidth(true)
-
-  w["patrol_type"]:SetText("Select Patrol Type:")
-  w["patrol_type"]:SetFullWidth(true)
-
-  w["clockwise_radio"]:SetLabel("Clockwise")
-  w["clockwise_radio"]:SetType("radio")
-  w["clockwise_radio"]:SetWidth(100)
-
-  w["counter_clock_radio"]:SetLabel("Counter")
-  w["counter_clock_radio"]:SetType("radio")
-  w["counter_clock_radio"]:SetWidth(100)
-
-  w["start_btn_group"]:SetLayout("Flow")
-  w["start_btn_group"]:SetFullWidth(true)
-
-  w["initiate_dropdown"]:SetText("Select Location")
-  w["initiate_dropdown"]:SetList(LOCATIONS)
-  w["initiate_dropdown"]:SetLabel("Patrol Start Location")
-  w["initiate_dropdown"]:SetWidth(135)
-
-  w["start_patrol_button"]:SetText("Start Patrol")
-  w["start_patrol_button"]:SetWidth(110)
-
-  w["location_group"]:SetFullWidth(350)
-  w["location_group"]:SetLayout("Flow")
-
-  w["start_loc_dropdown"]:SetText("Select Location")
-  w["start_loc_dropdown"]:SetList(LOCATIONS)
-  w["start_loc_dropdown"]:SetLabel("Starting Location")
-  w["start_loc_dropdown"]:SetWidth(135)
-
-  w["dest_loc_dropdown"]:SetText("Select Location")
-  w["dest_loc_dropdown"]:SetList(LOCATIONS)
-  w["dest_loc_dropdown"]:SetLabel("Destination Location")
-  w["dest_loc_dropdown"]:SetWidth(135)
-
-  w["clear_checkbox"]:SetLabel("Clear?")
-  w["clear_checkbox"]:SetWidth(75)
-  w["clear_checkbox"]:SetType("checkbox")
-  w["clear_checkbox"]:ToggleChecked(true)
-
-  w["problems_group"]:SetTitle("Describe the Situation")
-  w["problems_group"]:SetWidth(350)
-  w["problems_group"]:SetLayout("Flow")
-
-  w["offense_dropdown"]:SetText("Select Offense")
-  w["offense_dropdown"]:SetList(PROBLEMS)
-  w["offense_dropdown"]:SetLabel("What offense are you investigating")
-  w["offense_dropdown"]:SetDisabled(true)
-
-  w["assistance_checkbox"]:SetLabel("Do You Require Assistance?")
-  w["assistance_checkbox"]:SetType("checkbox")
-  w["assistance_checkbox"]:SetDisabled(true)
-
-  w["resolve_group"]:SetTitle("Resolve the Situation")
-  w["resolve_group"]:SetWidth(350)
-  w["resolve_group"]:SetLayout("List")
-
-  w["update_patrol_button"]:SetText("Update Patrol")
-  w["update_patrol_button"]:SetWidth(110)
-end
-
-function Me:AddChildren()
-  w["comm_frame"]:AddChild(w["pl_name_editbox"])
-  w["start_patrol_group"]:AddChild(w["clock_radio_group"])
-  w["clock_radio_group"]:AddChild(w["patrol_type"])
-  w["clock_radio_group"]:AddChild(w["clockwise_radio"])
-  w["clock_radio_group"]:AddChild(w["counter_clock_radio"])
-  w["start_patrol_group"]:AddChild(w["start_btn_group"])
-  w["start_btn_group"]:AddChild(w["initiate_dropdown"])
-  w["start_btn_group"]:AddChild(w["start_patrol_button"])
-  w["comm_frame"]:AddChild(w["start_patrol_group"])
-  w["comm_frame"]:AddChild(w["location_group"])
-  w["location_group"]:AddChild(w["start_loc_dropdown"])
-  w["location_group"]:AddChild(w["dest_loc_dropdown"])
-  w["location_group"]:AddChild(w["clear_checkbox"])
-  w["problems_group"]:AddChild(w["assistance_checkbox"])
-  w["comm_frame"]:AddChild(w["problems_group"])
-  w["comm_frame"]:AddChild(w["resolve_group"])
-  w["comm_frame"]:AddChild(w["update_patrol_button"])
-  w["problems_group"]:AddChild(w["offense_dropdown"])
-end
-
-function Me:RegisterCallbacks()
-  -- register callbacks
-  w["pl_name_editbox"]:SetCallback("OnTextChanged",
-      function(widget, event, text) pl_name = text end)
-  w["clockwise_radio"]:SetCallback("OnValueChanged",
-      function(widget, event, value) Me:OnClockwiseChanged(widget, value) end)
-  w["counter_clock_radio"]:SetCallback("OnValueChanged",
-      function(widget, event, value) Me:OnCounterChanged(widget, value) end)
-  w["start_loc_dropdown"]:SetCallback("OnValueChanged",
-      function(widget, event, value) start_loc = LOCATIONS[value] end)
-  w["dest_loc_dropdown"]:SetCallback("OnValueChanged",
-      function(widget, event, value) dest_loc = LOCATIONS[value] end)
-  w["clear_checkbox"]:SetCallback("OnValueChanged",
-      function(widget, event, value) Me:OnClearChanged(value) end)
-  w["update_patrol_button"]:SetCallback("OnClick",
-      function(widget, event, value) Me:OnUpdatePatrolClicked() end)
-end
+-- function Me:AddChildren()
+--
+--   w["start_patrol_group"]:AddChild(w["clock_radio_group"])
+--   w["clock_radio_group"]:AddChild(w["patrol_type"])
+--   w["clock_radio_group"]:AddChild(w["clockwise_radio"])
+--   w["clock_radio_group"]:AddChild(w["counter_clock_radio"])
+--   w["start_patrol_group"]:AddChild(w["start_btn_group"])
+--   w["start_btn_group"]:AddChild(w["initiate_dropdown"])
+--   w["start_btn_group"]:AddChild(w["start_patrol_button"])
+--   w["comm_frame"]:AddChild(w["start_patrol_group"])
+--   w["comm_frame"]:AddChild(w["location_group"])
+--   w["location_group"]:AddChild(w["start_loc_dropdown"])
+--   w["location_group"]:AddChild(w["dest_loc_dropdown"])
+--   w["location_group"]:AddChild(w["clear_checkbox"])
+--   w["problems_group"]:AddChild(w["assistance_checkbox"])
+--   w["comm_frame"]:AddChild(w["problems_group"])
+--   w["comm_frame"]:AddChild(w["resolve_group"])
+--   w["comm_frame"]:AddChild(w["update_patrol_button"])
+--   w["problems_group"]:AddChild(w["offense_dropdown"])
+-- end
+--
+-- function Me:RegisterCallbacks()
+--   -- register callbacks
+--
+--
+--
+--
+--
+--
+--
+-- end
