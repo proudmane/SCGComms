@@ -20,9 +20,15 @@ SCGComms = Main
 local defaults = {
   char = {
     patrol_comms = {
-      patrolIntro = "[name]'s patrol.",
-      clearSignal = "[start_loc] clear.",
-      enrouteTo = "Enroute to [dest_loc]."
+      startPatrol = "[name]'s patrol. Starting a [patrol_direction] patrol,"
+      .." ".."Beginning at [start_location]. [time] hours.",
+      updatePatrolClear = "[name]'s patrol. [start_location] clear, enroute to"
+      .." ".."[dest_location]. [time] hours.",
+      updatePatrolOffense = "[name]'s patrol. Currently dealing with a case of"
+      .." ".."[offense] at [current_location]. No backup needed. [time] hours.",
+      updatePatrolAsst = "[name]'s patrol. Currently dealing with a case of"
+      .." ".."[offense] at [current_location]. Backup requested. [time] hours.",
+      endPatrol = "[name]'s patrol ending at [dest_location]. [time] hours."
     },
     minimapicon = {
       hide = false
@@ -41,7 +47,6 @@ function Main:OnInitialize()
     print("SCGComms Debug Mode: On")
   end
 
-  Main.CommPanel:Show()
 end
 
 function Main:OnEnable()
@@ -60,6 +65,7 @@ end
 
 function Main:CreateDB()
   Main.db = LibStub("AceDB-3.0"):New("SCGCommsSaved", defaults)
+  Main.CommPanel:Show()
 end
 
 -------------------------------------------------------------------------------
@@ -71,10 +77,10 @@ LOCATIONS = {
   "Keg", "OT", "Pig", "TD"
 }
 
-PROBLEMS = {
+OFFENSES = {
   "Pos. of Illegal Goods", "Propaganda",
-  "Lock Picking Devices", "Bloodthistle",
-  "Felweed", "Demon's Blood", "Plague",
+  "Lock Picking Devices", "Bloodthistle possession",
+  "Felweed possession", "Demon's Blood possession", "Plague Possesssion",
   "Discharging a Weapon", "Gambling",
   "Vagrancy", "Possesssion of a Demon",
   "Unlawful Gatherinng",
@@ -83,7 +89,7 @@ PROBLEMS = {
   "Harrassment", "Misuse of Magic",
   "Trespassing", "Resisting Arrest",
   "Pick Pocketing", "Unarmed Assault",
-  "Leaving Crime Scene",
+  "Leaving a Crime Scene",
   "Property Damage", "Theft", "Burglary",
   "Stalking", "Armed Assault", "Magical Assault",
   "Falsifying Information", "Rioting",
