@@ -34,15 +34,6 @@ function Me:ResetAccent()
 
 end
 
-function Me:ToggleComms(value)
-  Main.db.char.patrolComms.enabled = value
-  if value == true then
-    w["config_frame"]:SetStatusText("SWCG Comm Unit Enabled")
-  else
-    w["config_frame"]:SetStatusText("SWCG Comm Unit Disabled")
-  end
-end
-
 -------------------------------------------------------------------------------
 -- Constructor Functions
 -------------------------------------------------------------------------------
@@ -68,7 +59,6 @@ function Me:ScrollFrame(parent_key)
   w[my_key]:SetFullHeight(true)
 
   Me:ConfigTextGroup(my_key)
-  Me:ToggleCommGroup(my_key)
   Me:ConfigBoxGroup(my_key)
 
   w[parent_key]:AddChild(w[my_key])
@@ -97,17 +87,6 @@ function Me:ConfigBoxGroup(parent_key)
   Me:UpdatePatrolAsstConfig(my_key)
   Me:EndPatrolConfig(my_key)
   Me:ResetAccentButton(my_key)
-
-  w[parent_key]:AddChild(w[my_key])
-end
-
-function Me:ToggleCommGroup(parent_key)
-  local my_key = "toggle_com_group"
-  w[my_key] = AceGUI:Create("InlineGroup")
-  w[my_key]:SetTitle("Enable/Disable Comms:")
-  w[my_key]:SetFullWidth(true)
-
-  Me:EnableCommCheck(my_key)
 
   w[parent_key]:AddChild(w[my_key])
 end

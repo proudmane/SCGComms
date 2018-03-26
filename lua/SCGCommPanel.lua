@@ -15,6 +15,7 @@ local end_loc = ""
 local dest_loc = ""
 local current_loc = ""
 local offense = ""
+local enabled = true
 
 local w = {}
 
@@ -22,7 +23,7 @@ local w = {}
 -- Functions
 -------------------------------------------------------------------------------
 function Me:SendComm(comm_string)
-  if Main.db.char.patrolComms.enabled == true then
+  if enabled == true then
     SendChatMessage(comm_string,"OFFICER" ,"COMMON")
   else
     print("Comm String: "..comm_string)
@@ -92,13 +93,14 @@ function Me:ClearAttrs()
     "current_loc_dropdown_desc", "rank_dropdown"
   }
   for _, v in pairs(dropdowns) do
+    w[v]:SetValue(nil)
     w[v]:SetText("Select...")
   end
   w["pl_name_editbox"]:SetText(pl_name)
 end
 
 function Me:ToggleComms(value)
-  Main.db.char.patrolComms.enabled = value
+  enabled = value
   if value == true then
     w["comm_frame"]:SetStatusText("SWCG Comm Unit Enabled")
   else
@@ -108,7 +110,7 @@ end
 -------------------------------------------------------------------------------
 -- Events
 -------------------------------------------------------------------------------
-function Me:OnStartPatrolClicked()
+function Me:OnStartPatrolClicked(widget)
   if pl_name == "" then
     w["comm_frame"]:SetStatusText("Please enter a vlid PL name.")
   elseif start_loc == "" then
@@ -130,6 +132,11 @@ function Me:OnStartPatrolClicked()
       "end_patrol_button", "end_loc_dropdown", "current_loc_dropdown",
       "next_loc_dropdown", "update_patrol_button_update", "clear_checkbox"
     }
+    w["current_loc_dropdown"]:SetValue(w["start_loc_dropdown"]:GetValue())
+    current_loc = start_loc
+    local loc_value = (w["current_loc_dropdown"]:GetValue() + 1)
+    w["next_loc_dropdown"]:SetValue(loc_value)
+    dest_loc = LOCATIONS[loc_value]
     Me:ToggleGroups(start_group, true)
     Me:ToggleGroups(end_group, false)
   end
@@ -140,6 +147,8 @@ function Me:OnUpdatePatrolClicked()
     w["comm_frame"]:SetStatusText("Please enter a vlid PL name.")
   elseif current_loc == "" then
     w["comm_frame"]:SetStatusText("Please enter your current location.")
+  elseif dest_loc == "" then
+    w["comm_frame"]:SetStatusText("Please enter your next location.")
   else
     local db = Main.db.char.patrolComms
     local clear_value = w["clear_checkbox"]:GetValue()
@@ -159,6 +168,14 @@ function Me:OnUpdatePatrolClicked()
     else
       Me:SendComm(comm_string)
     end
+
+    local current_value = w["next_loc_dropdown"]:GetValue()
+    local next_value = w["next_loc_dropdown"]:GetValue() + 1
+    w["current_loc_dropdown"]:SetValue(current_value)
+    current_loc = LOCATIONS[current_value]
+    w["next_loc_dropdown"]:SetValue(next_value)
+    dest_loc = LOCATIONS[next_value]
+
   end
 end
 
@@ -244,11 +261,13 @@ function Me:OnClearChanged(val)
   if val == true then
     Me:ToggleGroups(update_group, false)
     Me:ToggleGroups(describe_group, true)
+    w["current_loc_dropdown_desc"]:SetValue(nil)
+    w["current_loc_dropdown_desc"]:SetText("Select...")
   else
     Me:ToggleGroups(update_group, true)
     Me:ToggleGroups(describe_group, false)
+    w["current_loc_dropdown_desc"]:SetValue(w["current_loc_dropdown"]:GetValue())
   end
-  w["current_loc_dropdown_desc"]:SetValue(current_loc)
 end
 
 function Me:OnClockwiseChanged(widget, val)
@@ -464,7 +483,7 @@ function Me:StartPatrolBtn(parent_key)
   w[my_key]:SetWidth(110)
 
   w[my_key]:SetCallback("OnClick",
-      function() Me:OnStartPatrolClicked() end)
+      function(widget) Me:OnStartPatrolClicked(widget) end)
 
   w[parent_key]:AddChild(w[my_key])
 end
