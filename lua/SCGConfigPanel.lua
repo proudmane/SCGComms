@@ -142,6 +142,7 @@ function Me:StartPatrolConfig(parent_key)
   w[my_key]:SetCallback("OnEnterPressed",
       function(widget, event, text)
         Main.db.char.patrolComms.startPatrol = text
+        w["config_frame"]:SetStatusText("Start Patrol updated successfully.")
       end)
 
   w[parent_key]:AddChild(w[my_key])
@@ -157,6 +158,7 @@ function Me:UpdatePatrolClearConfig(parent_key)
   w[my_key]:SetCallback("OnEnterPressed",
       function(widget, event, text)
         Main.db.char.patrolComms.updatePatrolClear = text
+        w["config_frame"]:SetStatusText("Update Patrol clear updated successfully.")
       end)
 
   w[parent_key]:AddChild(w[my_key])
@@ -172,6 +174,7 @@ function Me:UpdatePatrolOffenseConfig(parent_key)
   w[my_key]:SetCallback("OnEnterPressed",
       function(widget, event, text)
         Main.db.char.patrolComms.updatePatrolOffense = text
+        w["config_frame"]:SetStatusText("Update Patrol w/ offense updated successfully.")
       end)
 
   w[parent_key]:AddChild(w[my_key])
@@ -187,6 +190,7 @@ function Me:UpdatePatrolAsstConfig(parent_key)
   w[my_key]:SetCallback("OnEnterPressed",
       function(widget, event, text)
         Main.db.char.patrolComms.updatePatrolAsst = text
+        w["config_frame"]:SetStatusText("Update Patrol w/ assistance updated successfully.")
       end)
 
   w[parent_key]:AddChild(w[my_key])
@@ -202,6 +206,7 @@ function Me:EndPatrolConfig(parent_key)
   w[my_key]:SetCallback("OnEnterPressed",
       function(widget, event, text)
         Main.db.char.patrolComms.endPatrol = text
+        w["config_frame"]:SetStatusText("End Patrol updated successfully.")
       end)
 
   w[parent_key]:AddChild(w[my_key])
