@@ -13,7 +13,6 @@ local DBIcon = LibStub:GetLibrary("LibDBIcon-1.0")
 -- Initialization
 -------------------------------------------------------------------------------
 function Me.Init()
-  print("init called")
   Me.data = LDB:NewDataObject("SCGComms", {
     type = "data source";
     text = "SCGComms";
@@ -33,9 +32,9 @@ function Me.OnLoad()
 end
 
 function Me.OnClick(frame, button)
-  if button == "LeftButton" then
+  if button == "LeftButton" and Main.CommFrame == nil then
     Main.CommPanel:Show()
-  elseif button == "RightButton" then
+  elseif button == "RightButton" and Main.ConfigFrame == nil then
     Main.ConfigPanel:Show()
   end
 end

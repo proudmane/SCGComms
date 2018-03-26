@@ -8,6 +8,7 @@ Main.CommPanel = Me
 -- attributes
 -------------------------------------------------------------------------------
 local pl_name = ""
+local rank = ""
 local patrol_type = "clockwise"
 local start_loc = ""
 local end_loc = ""
@@ -21,11 +22,16 @@ local w = {}
 -- Functions
 -------------------------------------------------------------------------------
 function Me:SendComm(comm_string)
-  SendChatMessage(comm_string,"OFFICER" ,"COMMON")
+  print(Main.db.char.patrolComms.enabled)
+  if Main.db.char.patrolComms.enabled == true then
+    SendChatMessage(comm_string,"OFFICER" ,"COMMON")
+  else
+    print("Comm String: "..comm_string)
+  end
 end
 
 function Me:BuildTimeString()
-  local db = Main.db.char.patrol_comms
+  local db = Main.db.char.patrolComms
   local hours, minutes = GetGameTime();
   local time_string = hours..":"..minutes
 
@@ -54,6 +60,7 @@ function Me:SubValues(comm_string)
   time_string = Me:BuildTimeString()
 
   comm_string = comm_string:gsub("%[name%]", pl_name)
+  comm_string = comm_string:gsub("%[rank%]", rank)
   comm_string = comm_string:gsub("%[patrol_direction%]", patrol_type)
   comm_string = comm_string:gsub("%[start_location%]", start_loc)
   comm_string = comm_string:gsub("%[end_location%]", end_loc)
@@ -73,6 +80,7 @@ end
 
 function Me:ClearAttrs()
   pl_name = ""
+  rank = ""
   start_loc = ""
   end_loc = ""
   dest_loc = ""
@@ -82,7 +90,7 @@ function Me:ClearAttrs()
   local dropdowns = {
     "start_loc_dropdown", "end_loc_dropdown",
     "current_loc_dropdown", "next_loc_dropdown", "offense_dropdown",
-    "current_loc_dropdown_desc"
+    "current_loc_dropdown_desc", "rank_dropdown"
   }
   for _, v in pairs(dropdowns) do
     w[v]:SetText("Select...")
@@ -99,7 +107,7 @@ function Me:OnStartPatrolClicked()
   elseif start_loc == "" then
     w["comm_frame"]:SetStatusText("Please enter your starting location.")
   else
-    local db = Main.db.char.patrol_comms
+    local db = Main.db.char.patrolComms
     local comm_string = Me:SubValues(db.startPatrol)
 
     if Main.debug == true then
@@ -108,8 +116,8 @@ function Me:OnStartPatrolClicked()
       Me:SendComm(comm_string)
     end
     local start_group = {
-      "start_patrol_button", "start_loc_dropdown",
-
+      "start_patrol_button", "start_loc_dropdown", "pl_name_editbox",
+      "rank_dropdown"
     }
     local end_group = {
       "end_patrol_button", "end_loc_dropdown", "current_loc_dropdown",
@@ -126,7 +134,7 @@ function Me:OnUpdatePatrolClicked()
   elseif current_loc == "" then
     w["comm_frame"]:SetStatusText("Please enter your current location.")
   else
-    local db = Main.db.char.patrol_comms
+    local db = Main.db.char.patrolComms
     local clear_value = w["clear_checkbox"]:GetValue()
     local asst_value = w["assistance_checkbox"]:GetValue()
     local comm_string
@@ -155,7 +163,7 @@ function Me:OnUpdatePatrolDescribeClicked()
   elseif offense == "" then
     w["comm_frame"]:SetStatusText("Please enter your the offense you're handling.")
   else
-    local db = Main.db.char.patrol_comms
+    local db = Main.db.char.patrolComms
     local clear_value = w["clear_checkbox"]:GetValue()
     local asst_value = w["assistance_checkbox"]:GetValue()
     local comm_string
@@ -182,7 +190,7 @@ function Me:OnEndPatrolClicked()
   elseif end_loc == "" then
     w["comm_frame"]:SetStatusText("Please enter your ending location.")
   else
-    local db = Main.db.char.patrol_comms
+    local db = Main.db.char.patrolComms
     local comm_string = Me:SubValues(db.endPatrol)
     w["assistance_checkbox"]:SetValue(false)
     w["clear_checkbox"]:SetValue(true)
@@ -193,8 +201,8 @@ function Me:OnEndPatrolClicked()
       Me:SendComm(comm_string)
     end
     local start_group = {
-      "start_patrol_button", "start_loc_dropdown"
-
+      "start_patrol_button", "start_loc_dropdown", "pl_name_editbox",
+      "rank_dropdown"
     }
     local end_group = {
       "end_patrol_button", "end_loc_dropdown", "current_loc_dropdown",
@@ -248,6 +256,7 @@ function Me:OnCounterChanged(widget, val)
     patrol_type = "counter-clockwise"
   end
 end
+
 -------------------------------------------------------------------------------
 -- Frame Constructor
 -------------------------------------------------------------------------------
@@ -262,6 +271,10 @@ function Me:CommFrame()
   w[my_key]:SetWidth(Main.db.char.commPanelDimensions.x)
   w[my_key]:SetHeight(Main.db.char.commPanelDimensions.y)
   w[my_key]:SetLayout("Fill")
+
+  w[my_key]:SetCallback("OnClose", function() Main.CommFrame = nil end)
+
+  Main.CommFrame = w[my_key]
   Me:ScrollFrame(my_key)
 end
 
@@ -272,7 +285,7 @@ function Me:ScrollFrame(parent_key)
   w[my_key]:SetFullWidth(true)
   w[my_key]:SetFullHeight(true)
 
-  Me:LeaderName(my_key)
+  Me:NameRankGroup(my_key)
   Me:StartPatrolGroup(my_key)
   Me:UpdatePatrolGroup(my_key)
   Me:DescribePatrolGroup(my_key)
@@ -362,17 +375,42 @@ function Me:UpdatePatrolBtnGroup(parent_key)
   w[parent_key]:AddChild(w[my_key])
 end
 
+function Me:NameRankGroup(parent_key)
+  local my_key = "name_rank_group"
+  w[my_key] = AceGUI:Create("SimpleGroup")
+
+  w[my_key]:SetLayout("Flow")
+  w[my_key]:SetFullWidth(true)
+
+  Me:RankDropdown(my_key)
+  Me:LeaderName(my_key)
+  w[parent_key]:AddChild(w[my_key])
+end
+
 function Me:LeaderName(parent_key) -- pl_name
   local my_key = "pl_name_editbox"
   w[my_key] = AceGUI:Create("EditBox")
-  w[my_key]:SetLabel("Patrol Leader's Name:")
-  w[my_key]:SetFullWidth(true)
+  w[my_key]:SetLabel("Leader Name")
+  w[my_key]:SetWidth(Main.db.char.commPanelDimensions.x - 210)
   w[my_key]:DisableButton(true)
   w[my_key]:SetCallback("OnTextChanged",
       function(widget, event, text) pl_name = text end)
   w[parent_key]:AddChild(w[my_key])
 end
 
+function Me:RankDropdown(parent_key)
+  local my_key = "rank_dropdown"
+  w[my_key] = AceGUI:Create("Dropdown")
+  w[my_key]:SetWidth(130)
+  w[my_key]:SetText("Select...")
+  w[my_key]:SetList(RANKS)
+  w[my_key]:SetLabel("Leader Rank")
+
+  w[my_key]:SetCallback("OnValueChanged",
+    function(widget, event, value) rank = RANKS[value] end)
+
+  w[parent_key]:AddChild(w[my_key])
+end
 
 function Me:PatrolTypeText(parent_key) -- label
   local my_key = "patrol_type_text"

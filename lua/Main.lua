@@ -10,7 +10,7 @@
 local Main      = LibStub("AceAddon-3.0"):NewAddon( "SCGComms",
                     "AceHook-3.0", "AceEvent-3.0" )
 local AceConfig = LibStub("AceConfig-3.0")
-Main.debug = true
+Main.debug = false
 
 SCGComms = Main
 
@@ -19,21 +19,22 @@ SCGComms = Main
 -------------------------------------------------------------------------------
 local defaults = {
   char = {
-    patrol_comms = {
-      startPatrol = "[name]'s patrol. Starting a [patrol_direction] patrol,"
+    patrolComms = {
+      enabled = true,
+      startPatrol = "[rank] [name]'s patrol. Starting a [patrol_direction] patrol,"
       .." ".."Beginning at [start_location]. [time] hours.",
-      updatePatrolClear = "[name]'s patrol. [current_location] clear, enroute to"
+      updatePatrolClear = "[rank] [name]'s patrol. [current_location] clear, enroute to"
       .." ".."[next_location]. [time] hours.",
-      updatePatrolOffense = "[name]'s patrol. Currently dealing with a case of"
+      updatePatrolOffense = "[rank] [name]'s patrol. Currently dealing with a case of"
       .." ".."[offense] at [current_location]. No backup needed. [time] hours.",
-      updatePatrolAsst = "[name]'s patrol. Currently dealing with a case of"
+      updatePatrolAsst = "[rank] [name]'s patrol. Currently dealing with a case of"
       .." ".."[offense] at [current_location]. Backup requested. [time] hours.",
-      endPatrol = "[name]'s patrol ending at [end_location]. [time] hours."
+      endPatrol = "[rank] [name]'s patrol ending at [end_location]. [time] hours."
     },
+    commPanelDimensions = { x = 420, y = 530 },
     minimapicon = {
       hide = false
-    },
-    commPanelDimensions = { x = 420, y = 520 }
+    }
   }
 }
 
@@ -66,12 +67,16 @@ end
 
 function Main:CreateDB()
   Main.db = LibStub("AceDB-3.0"):New("SCGCommsSaved", defaults)
-  Main.CommPanel:Show()
 end
 
 -------------------------------------------------------------------------------
 -- Constants
 -------------------------------------------------------------------------------
+RANKS = {
+  "Private", "Corporal", "Sergeant",
+  "Master Sergeant", "Lieutenant", "Commander"
+}
+
 LOCATIONS = {
   "Stocks", "MQ", "Recluse", "Lamb", "LR",
   "CD", "GY", "Shady Lady", "DD",
