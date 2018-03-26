@@ -68,8 +68,8 @@ function Me:ScrollFrame(parent_key)
   w[my_key]:SetFullHeight(true)
 
   Me:ConfigTextGroup(my_key)
-  Me:ConfigBoxGroup(my_key)
   Me:ToggleCommGroup(my_key)
+  Me:ConfigBoxGroup(my_key)
 
   w[parent_key]:AddChild(w[my_key])
 end
@@ -123,9 +123,9 @@ function Me:ConfigText(parent_key)
   "patrol is handling an offense, with no backup required; and updating".." "..
   "that the patrol requires backup while handling an offense. You may".." "..
   "use the following tags to customize each response:\n\n"..
-  "[rank] [name] [patrol_direction] [start_location] [current_location]".." "..
-  "[next_location] [end_location] and [time]\n\n"..
-  "Also, below that is a checkbox for you to disable the comm so you".." "..
+  "[rank] [name] [patrol_direction] [start_location] [end_location]".." "..
+  "[current_location] [next_location] and [time]\n\n"..
+  "Also, there is a checkbox for you to disable the comm so you".." "..
   "may test your responses without spamming the comm with actual messages."
   )
 

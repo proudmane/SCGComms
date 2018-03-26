@@ -22,7 +22,6 @@ local w = {}
 -- Functions
 -------------------------------------------------------------------------------
 function Me:SendComm(comm_string)
-  print(Main.db.char.patrolComms.enabled)
   if Main.db.char.patrolComms.enabled == true then
     SendChatMessage(comm_string,"OFFICER" ,"COMMON")
   else
@@ -64,7 +63,7 @@ function Me:SubValues(comm_string)
   comm_string = comm_string:gsub("%[patrol_direction%]", patrol_type)
   comm_string = comm_string:gsub("%[start_location%]", start_loc)
   comm_string = comm_string:gsub("%[end_location%]", end_loc)
-  comm_string = comm_string:gsub("%[dest_location%]", dest_loc)
+  comm_string = comm_string:gsub("%[next_location%]", dest_loc)
   comm_string = comm_string:gsub("%[offense%]", offense)
   comm_string = comm_string:gsub("%[current_location%]", current_loc)
   comm_string = comm_string:gsub("%[time%]", time_string)
@@ -98,6 +97,14 @@ function Me:ClearAttrs()
   w["pl_name_editbox"]:SetText(pl_name)
 end
 
+function Me:ToggleComms(value)
+  Main.db.char.patrolComms.enabled = value
+  if value == true then
+    w["comm_frame"]:SetStatusText("SWCG Comm Unit Enabled")
+  else
+    w["comm_frame"]:SetStatusText("SWCG Comm Unit Disabled.")
+  end
+end
 -------------------------------------------------------------------------------
 -- Events
 -------------------------------------------------------------------------------
@@ -181,6 +188,7 @@ function Me:OnUpdatePatrolDescribeClicked()
     else
       Me:SendComm(comm_string)
     end
+    w["comm_frame"]:SetStatusText("")
   end
 end
 
@@ -358,6 +366,7 @@ function Me:ClockRadioGroup(parent_key)
   Me:PatrolTypeText(my_key)
   Me:ClockwiseRadio(my_key)
   Me:CounterRadio(my_key)
+  Me:EnableCommCheck(my_key)
 
   w[parent_key]:AddChild(w[my_key])
 end
@@ -473,17 +482,15 @@ function Me:EndPatrolBtn(parent_key)
   w[parent_key]:AddChild(w[my_key])
 end
 
-function Me:StartLocDropdownUpdate(parent_key)
-  local my_key = "start_loc_dropdown_update"
-  w[my_key] = AceGUI:Create("Dropdown")
-  w[my_key]:SetText("Select...")
-  w[my_key]:SetList(LOCATIONS)
-  w[my_key]:SetLabel("Starting Location")
-  w[my_key]:SetWidth(130)
-  w[my_key]:SetDisabled(true)
+function Me:EnableCommCheck(parent_key)
+  local my_key = "enable_comm_checkbox"
+  w[my_key] = AceGUI:Create("CheckBox")
+  w[my_key]:SetLabel("Enable Comms")
+  w[my_key]:SetWidth(120)
+  w[my_key]:ToggleChecked(Main.db.char.patrolComms.enabled)
 
   w[my_key]:SetCallback("OnValueChanged",
-      function(widget, event, value) current_loc = LOCATIONS[value] end)
+      function(widget, event, value) Me:ToggleComms(value) end)
 
   w[parent_key]:AddChild(w[my_key])
 end
@@ -493,7 +500,7 @@ function Me:StartLocDropdown(parent_key)
   w[my_key] = AceGUI:Create("Dropdown")
   w[my_key]:SetText("Select...")
   w[my_key]:SetList(LOCATIONS)
-  w[my_key]:SetLabel("Starting Location")
+  w[my_key]:SetLabel("Start Location")
   w[my_key]:SetWidth(130)
 
   w[my_key]:SetCallback("OnValueChanged",
@@ -507,7 +514,7 @@ function Me:NextLocDropdown(parent_key)
   w[my_key] = AceGUI:Create("Dropdown")
   w[my_key]:SetText("Select...")
   w[my_key]:SetList(LOCATIONS)
-  w[my_key]:SetLabel("Destination Location")
+  w[my_key]:SetLabel("Next Location")
   w[my_key]:SetWidth(130)
   w[my_key]:SetDisabled(true)
 
@@ -522,7 +529,7 @@ function Me:EndLocDropdown(parent_key)
   w[my_key] = AceGUI:Create("Dropdown")
   w[my_key]:SetText("Select...")
   w[my_key]:SetList(LOCATIONS)
-  w[my_key]:SetLabel("Destination Location")
+  w[my_key]:SetLabel("End Location")
   w[my_key]:SetWidth(130)
   w[my_key]:SetDisabled(true)
 

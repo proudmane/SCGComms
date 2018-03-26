@@ -78,9 +78,10 @@ RANKS = {
 }
 
 LOCATIONS = {
-  "Stocks", "MQ", "Recluse", "Lamb", "LR",
-  "CD", "GY", "Shady Lady", "DD",
-  "Keg", "OT", "Pig", "TD"
+  "Stockades", "Mage Quarter", "Blue Recluse",
+  "Slaughtered Lamb", "Lion's Rest", "Cathedral Square",
+   "Graveyard", "Shady Lady", "Dwarven District",
+  "Golden Keg", "Old Town", "Pig and Whistle", "Trade District"
 }
 
 OFFENSES = {
