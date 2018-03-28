@@ -125,18 +125,31 @@ function Me:OnStartPatrolClicked(widget)
       Me:SendComm(comm_string)
     end
     local start_group = {
-      "start_patrol_button", "start_loc_dropdown", "pl_name_editbox",
-      "rank_dropdown"
+      "start_patrol_button", "start_loc_dropdown",
     }
     local end_group = {
       "end_patrol_button", "end_loc_dropdown", "current_loc_dropdown",
       "next_loc_dropdown", "update_patrol_button_update", "clear_checkbox"
     }
-    w["current_loc_dropdown"]:SetValue(w["start_loc_dropdown"]:GetValue())
-    current_loc = start_loc
-    local loc_value = (w["current_loc_dropdown"]:GetValue() + 1)
-    w["next_loc_dropdown"]:SetValue(loc_value)
-    dest_loc = LOCATIONS[loc_value]
+    if patrol_type == "clockwise" then
+      w["current_loc_dropdown"]:SetValue(w["start_loc_dropdown"]:GetValue())
+      current_loc = start_loc
+      local loc_value = (w["current_loc_dropdown"]:GetValue() + 1)
+      w["next_loc_dropdown"]:SetValue(loc_value)
+      dest_loc = LOCATIONS[loc_value]
+    elseif patrol_type == "counter-clockwise" then
+      w["current_loc_dropdown"]:SetValue(w["start_loc_dropdown"]:GetValue())
+      current_loc = start_loc
+      local loc_value = (w["current_loc_dropdown"]:GetValue() - 1)
+      if loc_value == 0 then
+        loc_value = NUM_LOCATIONS
+      end
+      w["next_loc_dropdown"]:SetValue(loc_value)
+      dest_loc = LOCATIONS[loc_value]
+    end
+
+    w["end_loc_dropdown"]:SetValue(w["start_loc_dropdown"]:GetValue())
+    w["end_loc_dropdown"]:SetText(start_loc)
     Me:ToggleGroups(start_group, true)
     Me:ToggleGroups(end_group, false)
   end
@@ -168,14 +181,33 @@ function Me:OnUpdatePatrolClicked()
     else
       Me:SendComm(comm_string)
     end
-
-    local current_value = w["next_loc_dropdown"]:GetValue()
-    local next_value = w["next_loc_dropdown"]:GetValue() + 1
-    w["current_loc_dropdown"]:SetValue(current_value)
-    current_loc = LOCATIONS[current_value]
-    w["next_loc_dropdown"]:SetValue(next_value)
-    dest_loc = LOCATIONS[next_value]
-
+    if patrol_type == "clockwise" then
+      local current_value = w["next_loc_dropdown"]:GetValue()
+      local next_value = w["next_loc_dropdown"]:GetValue() + 1
+      if current_value == NUM_LOCATIONS then
+        next_value = 1
+      end
+      w["current_loc_dropdown"]:SetValue(current_value)
+      current_loc = LOCATIONS[current_value]
+      w["next_loc_dropdown"]:SetValue(next_value)
+      dest_loc = LOCATIONS[next_value]
+    elseif patrol_type == "counter-clockwise" then
+      local current_value = w["current_loc_dropdown"]:GetValue() - 1
+      local next_value = current_value - 1
+      if w["current_loc_dropdown"]:GetValue() == 1 then
+        current_value = NUM_LOCATIONS
+        next_value = NUM_LOCATIONS - 1
+      end
+      if current_value == 1 then
+        next_value = NUM_LOCATIONS
+      end
+      w["current_loc_dropdown"]:SetValue(current_value)
+      current_loc = LOCATIONS[current_value]
+      w["next_loc_dropdown"]:SetValue(next_value)
+      dest_loc = LOCATIONS[next_value]
+    end
+    w["end_loc_dropdown"]:SetValue(w["current_loc_dropdown"]:GetValue())
+    w["end_loc_dropdown"]:SetText(current_loc)
   end
 end
 

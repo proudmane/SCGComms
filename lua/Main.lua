@@ -84,6 +84,8 @@ LOCATIONS = {
   "Golden Keg", "Old Town", "Pig and Whistle", "Trade District"
 }
 
+NUM_LOCATIONS = table.getn(LOCATIONS)
+
 OFFENSES = {
   "Pos. of Illegal Goods", "Propaganda",
   "Lock Picking Devices", "Bloodthistle possession",
