@@ -78,10 +78,10 @@ RANKS = {
 }
 
 LOCATIONS = {
-  "Stockades", "Mage Quarter", "Blue Recluse",
-  "Slaughtered Lamb", "Lion's Rest", "Cathedral Square",
-   "Graveyard", "Shady Lady", "Dwarven District",
-  "Golden Keg", "Old Town", "Pig and Whistle", "Trade District"
+  "Stockades", "Blue Recluse",
+  "Slaughtered Lamb", "Lion's Rest","Harbor", "Cathedral Square",
+   "Graveyard", "Shady Lady", "Golden Keg", "Pig and Whistle",
+   "Trade District"
 }
 
 NUM_LOCATIONS = table.getn(LOCATIONS)

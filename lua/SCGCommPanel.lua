@@ -345,6 +345,7 @@ function Me:ScrollFrame(parent_key)
   w[my_key]:SetFullHeight(true)
 
   Me:NameRankGroup(my_key)
+  Me:OptionalLocGroup(my_key)
   Me:StartPatrolGroup(my_key)
   Me:UpdatePatrolGroup(my_key)
   Me:DescribePatrolGroup(my_key)
@@ -447,6 +448,20 @@ function Me:NameRankGroup(parent_key)
   w[parent_key]:AddChild(w[my_key])
 end
 
+function Me:OptionalLocGroup(parent_key)
+  local my_key = "optional_loc_group"
+  w[my_key] = AceGUI:Create("InlineGroup")
+
+  w[my_key]:SetTitle("Optional Locations")
+  w[my_key]:SetLayout("Flow")
+  w[my_key]:SetFullWidth(true)
+
+  Me:OptionalLambCheck(my_key)
+  Me:OptionalHarborCheck(my_key)
+  Me:OptionalGraveyardCheck(my_key)
+  w[parent_key]:AddChild(w[my_key])
+end
+
 function Me:LeaderName(parent_key) -- pl_name
   local my_key = "pl_name_editbox"
   w[my_key] = AceGUI:Create("EditBox")
@@ -468,6 +483,39 @@ function Me:RankDropdown(parent_key)
 
   w[my_key]:SetCallback("OnValueChanged",
     function(widget, event, value) rank = RANKS[value] end)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:OptionalLambCheck(parent_key)
+  local my_key = "optional_lamb_check"
+  w[my_key] = AceGUI:Create("CheckBox")
+
+  w[my_key]:SetType("checkbox")
+  w[my_key]:SetLabel("Lamb")
+  w[my_key]:SetWidth(100)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:OptionalHarborCheck(parent_key)
+  local my_key = "optional_harbor_check"
+  w[my_key] = AceGUI:Create("CheckBox")
+
+  w[my_key]:SetType("checkbox")
+  w[my_key]:SetLabel("Harbor")
+  w[my_key]:SetWidth(100)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:OptionalGraveyardCheck(parent_key)
+  local my_key = "optional_graveyard_check"
+  w[my_key] = AceGUI:Create("CheckBox")
+
+  w[my_key]:SetType("checkbox")
+  w[my_key]:SetLabel("Graveyard")
+  w[my_key]:SetWidth(100)
 
   w[parent_key]:AddChild(w[my_key])
 end
