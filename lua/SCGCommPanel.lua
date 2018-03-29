@@ -175,13 +175,14 @@ function Me:OnStartPatrolClicked(widget)
     else
       Me:SendComm(comm_string)
     end
+
     local start_group = {
       "start_patrol_button", "start_loc_dropdown",
     }
     local end_group = {
-      "end_patrol_button", "end_loc_dropdown", "current_loc_dropdown",
-      "next_loc_dropdown", "update_patrol_button_update", "clear_checkbox"
+      "end_patrol_button", "end_loc_dropdown",
     }
+
     if patrol_type == "clockwise" then
       w["current_loc_dropdown"]:SetValue(w["start_loc_dropdown"]:GetValue())
       current_loc = start_loc
@@ -314,9 +315,8 @@ function Me:OnEndPatrolClicked()
       "rank_dropdown"
     }
     local end_group = {
-      "end_patrol_button", "end_loc_dropdown", "current_loc_dropdown",
-      "next_loc_dropdown", "update_patrol_button_update", "clear_checkbox",
-      "offense_dropdown", "assistance_checkbox", "update_patrol_button_describe",
+      "end_patrol_button", "end_loc_dropdown", "offense_dropdown",
+      "assistance_checkbox", "update_patrol_button_describe",
       "current_loc_dropdown_desc"
     }
     Me:ClearAttrs()
@@ -691,7 +691,6 @@ function Me:NextLocDropdown(parent_key)
   w[my_key]:SetList(LOCATIONS)
   w[my_key]:SetLabel("Next Location")
   w[my_key]:SetWidth(130)
-  w[my_key]:SetDisabled(true)
 
   w[my_key]:SetCallback("OnValueChanged",
       function(widget, event, value) dest_loc = LOCATIONS[value] end)
@@ -721,7 +720,6 @@ function Me:ClearCheckBox(parent_key)
   w[my_key]:SetWidth(75)
   w[my_key]:SetType("checkbox")
   w[my_key]:ToggleChecked(true)
-  w[my_key]:SetDisabled(true)
 
   w[my_key]:SetCallback("OnValueChanged",
   function(widget, event, value) Me:OnClearChanged(value) end)
@@ -750,7 +748,6 @@ function Me:CurrentLocationDropdown(parent_key)
   w[my_key]:SetList(LOCATIONS)
   w[my_key]:SetLabel("Current Location")
   w[my_key]:SetWidth(130)
-  w[my_key]:SetDisabled(true)
 
   w[my_key]:SetCallback("OnValueChanged",
       function(widget, event, value) current_loc = LOCATIONS[value] end)
@@ -788,7 +785,6 @@ function Me:UpdatePatrolBtnUpdate(parent_key)
   w[my_key] = AceGUI:Create("Button")
   w[my_key]:SetText("Update Patrol")
   w[my_key]:SetWidth(110)
-  w[my_key]:SetDisabled(true)
 
   w[my_key]:SetCallback("OnClick",
       function(widget, event, value) Me:OnUpdatePatrolClicked() end)
