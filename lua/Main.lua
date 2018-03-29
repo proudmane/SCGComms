@@ -78,13 +78,32 @@ RANKS = {
 }
 
 LOCATIONS = {
-  "Stockades", "Blue Recluse",
-  "Slaughtered Lamb", "Lion's Rest","Harbor", "Cathedral Square",
-   "Graveyard", "Shady Lady", "Golden Keg", "Pig and Whistle",
-   "Trade District"
+  "Stockades", "Blue Recluse", "Lion's Rest", "Cathedral Square",
+   "Shady Lady", "Golden Keg", "Pig and Whistle", "Trade District"
 }
 
-NUM_LOCATIONS = table.getn(LOCATIONS)
+function Main:Locations()
+  local loc = {}
+  for k,v in pairs(LOCATIONS) do
+    loc[k] = v
+  end
+
+  return loc
+end
+
+function Main:NumLocations()
+  return table.getn(LOCATIONS)
+end
+
+function Main:LocationsIndex()
+  local locs = Main:Locations()
+  local loc = {}
+  for k,v in pairs(locs) do
+    loc[v] = k
+  end
+
+  return loc
+end
 
 OFFENSES = {
   "Pos. of Illegal Goods", "Propaganda",
