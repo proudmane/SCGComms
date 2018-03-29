@@ -16,10 +16,6 @@ local dest_loc = ""
 local current_loc = ""
 local offense = ""
 local enabled = true
-local all_loc_dropdowns = {
-  "start_loc_dropdown", "end_loc_dropdown", "current_loc_dropdown",
-  "next_loc_dropdown", "current_loc_dropdown_desc"
-}
 
 local w = {}
 
@@ -111,62 +107,15 @@ function Me:ToggleComms(value)
     w["comm_frame"]:SetStatusText("SWCG Comm Unit Disabled.")
   end
 end
-
-function Me:AddLamb()
-  table.insert(LOCATIONS, 3, "Lamb")
-  for _, v in pairs(all_loc_dropdowns) do
-    w[v]:SetList(LOCATIONS)
-  end
-end
-
-function Me:RemoveLamb()
-  table.remove(LOCATIONS, 3)
-  for _, v in pairs(all_loc_dropdowns) do
-    w[v]:SetList(LOCATIONS)
-  end
-end
-
-function Me:AddHarbor()
-  local index = SCGComms:LocationsIndex()
-  table.insert(LOCATIONS, index["Lion's Rest"] + 1, "Harbor")
-  for _, v in pairs(all_loc_dropdowns) do
-    w[v]:SetList(LOCATIONS)
-  end
-end
-
-function Me:RemoveHarbor()
-  local index = SCGComms:LocationsIndex()
-  table.remove(LOCATIONS, index["Harbor"])
-  for _, v in pairs(all_loc_dropdowns) do
-    w[v]:SetList(LOCATIONS)
-  end
-end
-
-function Me:AddGraveyard()
-  local index = SCGComms:LocationsIndex()
-  table.insert(LOCATIONS, index["Cathedral Square"] + 1, "Graveyard")
-  for _, v in pairs(all_loc_dropdowns) do
-    w[v]:SetList(LOCATIONS)
-  end
-end
-
-function Me:RemoveGraveyard()
-  local index = SCGComms:LocationsIndex()
-  table.remove(LOCATIONS, index["Graveyard"])
-  for _, v in pairs(all_loc_dropdowns) do
-    w[v]:SetList(LOCATIONS)
-  end
-end
 -------------------------------------------------------------------------------
 -- Events
 -------------------------------------------------------------------------------
 function Me:OnStartPatrolClicked(widget)
   if pl_name == "" then
-    w["comm_frame"]:SetStatusText("Please enter a valid PL name.")
+    w["comm_frame"]:SetStatusText("Please enter a vlid PL name.")
   elseif start_loc == "" then
     w["comm_frame"]:SetStatusText("Please enter your starting location.")
   else
-    w["comm_frame"]:SetStatusText("")
     local db = Main.db.char.patrolComms
     local comm_string = Me:SubValues(db.startPatrol)
 
@@ -176,30 +125,20 @@ function Me:OnStartPatrolClicked(widget)
       Me:SendComm(comm_string)
     end
     local start_group = {
-      "start_patrol_button", "start_loc_dropdown",
+      "start_patrol_button", "start_loc_dropdown", "pl_name_editbox",
+      "rank_dropdown"
     }
     local end_group = {
-      "end_patrol_button", "end_loc_dropdown"
+      "end_patrol_button", "end_loc_dropdown", "current_loc_dropdown",
+      "next_loc_dropdown", "update_patrol_button_update", "clear_checkbox"
     }
-    if patrol_type == "clockwise" then
-      w["current_loc_dropdown"]:SetValue(w["start_loc_dropdown"]:GetValue())
-      current_loc = start_loc
-      local loc_value = (w["current_loc_dropdown"]:GetValue() + 1)
-      w["next_loc_dropdown"]:SetValue(loc_value)
-      dest_loc = LOCATIONS[loc_value]
-    elseif patrol_type == "counter-clockwise" then
-      w["current_loc_dropdown"]:SetValue(w["start_loc_dropdown"]:GetValue())
-      current_loc = start_loc
-      local loc_value = (w["current_loc_dropdown"]:GetValue() - 1)
-      if loc_value == 0 then
-        loc_value = SCGComms:NumLocations()
-      end
-      w["next_loc_dropdown"]:SetValue(loc_value)
-      dest_loc = LOCATIONS[loc_value]
-    end
 
-    w["end_loc_dropdown"]:SetValue(w["start_loc_dropdown"]:GetValue())
-    w["end_loc_dropdown"]:SetText(start_loc)
+    w["current_loc_dropdown"]:SetValue(w["start_loc_dropdown"]:GetValue())
+    current_loc = start_loc
+    local loc_value = (w["current_loc_dropdown"]:GetValue() + 1)
+    w["next_loc_dropdown"]:SetValue(loc_value)
+    dest_loc = LOCATIONS[loc_value]
+
     Me:ToggleGroups(start_group, true)
     Me:ToggleGroups(end_group, false)
   end
@@ -207,13 +146,12 @@ end
 
 function Me:OnUpdatePatrolClicked()
   if pl_name == "" then
-    w["comm_frame"]:SetStatusText("Please enter a valid PL name.")
+    w["comm_frame"]:SetStatusText("Please enter a vlid PL name.")
   elseif current_loc == "" then
     w["comm_frame"]:SetStatusText("Please enter your current location.")
   elseif dest_loc == "" then
     w["comm_frame"]:SetStatusText("Please enter your next location.")
   else
-    w["comm_frame"]:SetStatusText("")
     local db = Main.db.char.patrolComms
     local clear_value = w["clear_checkbox"]:GetValue()
     local asst_value = w["assistance_checkbox"]:GetValue()
@@ -232,46 +170,34 @@ function Me:OnUpdatePatrolClicked()
     else
       Me:SendComm(comm_string)
     end
+
     if patrol_type == "clockwise" then
       local current_value = w["next_loc_dropdown"]:GetValue()
-      local next_value = w["next_loc_dropdown"]:GetValue() + 1
-      if current_value == SCGComms:NumLocations() then
-        next_value = 1
-      end
+      local next_value = current_value + 1
       w["current_loc_dropdown"]:SetValue(current_value)
       current_loc = LOCATIONS[current_value]
       w["next_loc_dropdown"]:SetValue(next_value)
       dest_loc = LOCATIONS[next_value]
     elseif patrol_type == "counter-clockwise" then
-      local current_value = w["current_loc_dropdown"]:GetValue() - 1
+      local current_value = w["current_loc_dropdown"]:GetValue()
       local next_value = current_value - 1
-      if w["current_loc_dropdown"]:GetValue() == 1 then
-        current_value = SCGComms:NumLocations()
-        next_value = SCGComms:NumLocations() - 1
-      end
-      if current_value == 1 then
-        next_value = SCGComms:NumLocations()
-      end
-      w["current_loc_dropdown"]:SetValue(current_value)
-      current_loc = LOCATIONS[current_value]
+      w["current_loc_dropdown"]:SetValue(current_value - 1)
+      w["current_loc_dropdown"]:SetText(LOCATIONS[current_value - 1])
+      current_loc = LOCATIONS[current_value - 1]
       w["next_loc_dropdown"]:SetValue(next_value)
       dest_loc = LOCATIONS[next_value]
     end
-    w["end_loc_dropdown"]:SetValue(w["current_loc_dropdown"]:GetValue())
-    w["end_loc_dropdown"]:SetText(current_loc)
-    end_loc = current_loc
   end
 end
 
 function Me:OnUpdatePatrolDescribeClicked()
   if pl_name == "" then
-    w["comm_frame"]:SetStatusText("Please enter a valid PL name.")
+    w["comm_frame"]:SetStatusText("Please enter a vlid PL name.")
   elseif current_loc == "" then
     w["comm_frame"]:SetStatusText("Please enter your current location.")
   elseif offense == "" then
     w["comm_frame"]:SetStatusText("Please enter your the offense you're handling.")
   else
-    w["comm_frame"]:SetStatusText("")
     local db = Main.db.char.patrolComms
     local clear_value = w["clear_checkbox"]:GetValue()
     local asst_value = w["assistance_checkbox"]:GetValue()
@@ -296,11 +222,10 @@ end
 
 function Me:OnEndPatrolClicked()
   if pl_name == "" then
-    w["comm_frame"]:SetStatusText("Please enter a valid PL name.")
+    w["comm_frame"]:SetStatusText("Please enter a vlid PL name.")
   elseif end_loc == "" then
     w["comm_frame"]:SetStatusText("Please enter your ending location.")
   else
-    w["comm_frame"]:SetStatusText("")
     local db = Main.db.char.patrolComms
     local comm_string = Me:SubValues(db.endPatrol)
     w["assistance_checkbox"]:SetValue(false)
@@ -399,7 +324,6 @@ function Me:ScrollFrame(parent_key)
   w[my_key]:SetFullHeight(true)
 
   Me:NameRankGroup(my_key)
-  Me:OptionalLocGroup(my_key)
   Me:StartPatrolGroup(my_key)
   Me:UpdatePatrolGroup(my_key)
   Me:DescribePatrolGroup(my_key)
@@ -502,20 +426,6 @@ function Me:NameRankGroup(parent_key)
   w[parent_key]:AddChild(w[my_key])
 end
 
-function Me:OptionalLocGroup(parent_key)
-  local my_key = "optional_loc_group"
-  w[my_key] = AceGUI:Create("InlineGroup")
-
-  w[my_key]:SetTitle("Optional Locations")
-  w[my_key]:SetLayout("Flow")
-  w[my_key]:SetFullWidth(true)
-
-  Me:OptionalLambCheck(my_key)
-  Me:OptionalHarborCheck(my_key)
-  Me:OptionalGraveyardCheck(my_key)
-  w[parent_key]:AddChild(w[my_key])
-end
-
 function Me:LeaderName(parent_key) -- pl_name
   local my_key = "pl_name_editbox"
   w[my_key] = AceGUI:Create("EditBox")
@@ -537,63 +447,6 @@ function Me:RankDropdown(parent_key)
 
   w[my_key]:SetCallback("OnValueChanged",
     function(widget, event, value) rank = RANKS[value] end)
-
-  w[parent_key]:AddChild(w[my_key])
-end
-
-function Me:OptionalLambCheck(parent_key)
-  local my_key = "optional_lamb_check"
-  w[my_key] = AceGUI:Create("CheckBox")
-
-  w[my_key]:SetType("checkbox")
-  w[my_key]:SetLabel("Lamb")
-  w[my_key]:SetWidth(100)
-
-  w[my_key]:SetCallback("OnValueChanged", function(widget, event, value)
-      if value == true then
-        Me:AddLamb()
-      else
-        Me:RemoveLamb()
-      end
-  end)
-
-  w[parent_key]:AddChild(w[my_key])
-end
-
-function Me:OptionalHarborCheck(parent_key)
-  local my_key = "optional_harbor_check"
-  w[my_key] = AceGUI:Create("CheckBox")
-
-  w[my_key]:SetType("checkbox")
-  w[my_key]:SetLabel("Harbor")
-  w[my_key]:SetWidth(100)
-
-  w[my_key]:SetCallback("OnValueChanged", function(widget, event, value)
-    if value == true then
-      Me:AddHarbor()
-    else
-      Me:RemoveHarbor()
-    end
-  end)
-
-  w[parent_key]:AddChild(w[my_key])
-end
-
-function Me:OptionalGraveyardCheck(parent_key)
-  local my_key = "optional_graveyard_check"
-  w[my_key] = AceGUI:Create("CheckBox")
-
-  w[my_key]:SetType("checkbox")
-  w[my_key]:SetLabel("Graveyard")
-  w[my_key]:SetWidth(100)
-
-  w[my_key]:SetCallback("OnValueChanged", function(widget, event, value)
-    if value == true then
-      Me:AddGraveyard()
-    else
-      Me:RemoveGraveyard()
-    end
-  end)
 
   w[parent_key]:AddChild(w[my_key])
 end
@@ -693,6 +546,7 @@ function Me:NextLocDropdown(parent_key)
   w[my_key]:SetList(LOCATIONS)
   w[my_key]:SetLabel("Next Location")
   w[my_key]:SetWidth(130)
+  w[my_key]:SetDisabled(true)
 
   w[my_key]:SetCallback("OnValueChanged",
       function(widget, event, value) dest_loc = LOCATIONS[value] end)
@@ -722,6 +576,7 @@ function Me:ClearCheckBox(parent_key)
   w[my_key]:SetWidth(75)
   w[my_key]:SetType("checkbox")
   w[my_key]:ToggleChecked(true)
+  w[my_key]:SetDisabled(true)
 
   w[my_key]:SetCallback("OnValueChanged",
   function(widget, event, value) Me:OnClearChanged(value) end)
@@ -750,6 +605,7 @@ function Me:CurrentLocationDropdown(parent_key)
   w[my_key]:SetList(LOCATIONS)
   w[my_key]:SetLabel("Current Location")
   w[my_key]:SetWidth(130)
+  w[my_key]:SetDisabled(true)
 
   w[my_key]:SetCallback("OnValueChanged",
       function(widget, event, value) current_loc = LOCATIONS[value] end)
@@ -787,6 +643,7 @@ function Me:UpdatePatrolBtnUpdate(parent_key)
   w[my_key] = AceGUI:Create("Button")
   w[my_key]:SetText("Update Patrol")
   w[my_key]:SetWidth(110)
+  w[my_key]:SetDisabled(true)
 
   w[my_key]:SetCallback("OnClick",
       function(widget, event, value) Me:OnUpdatePatrolClicked() end)
