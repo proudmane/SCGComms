@@ -374,6 +374,7 @@ function Me:OnClearChanged(val)
     Me:ToggleGroups(update_group, true)
     Me:ToggleGroups(describe_group, false)
     w["current_loc_dropdown_desc"]:SetValue(w["current_loc_dropdown"]:GetValue())
+    w["current_loc_dropdown_desc"]:SetText(current_loc)
   end
 end
 
