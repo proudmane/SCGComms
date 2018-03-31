@@ -226,6 +226,7 @@ function Me:OnStartPatrolClicked(widget)
     w["end_loc_dropdown"]:SetText(start_loc)
     Me:ToggleGroups(start_group, true)
     Me:ToggleGroups(end_group, false)
+    end_loc = start_loc
   end
 end
 
