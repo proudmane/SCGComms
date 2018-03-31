@@ -29,7 +29,8 @@ local defaults = {
       .." ".."[offense] at [current_location]. No backup needed. [time] hours.",
       updatePatrolAsst = "[rank] [name]'s patrol. Currently dealing with a case of"
       .." ".."[offense] at [current_location]. Backup requested. [time] hours.",
-      endPatrol = "[rank] [name]'s patrol ending at [end_location]. [time] hours."
+      endPatrol = "[rank] [name]'s patrol ending at [end_location]. [time] hours.",
+      emote = "pulls out [gender] comm, and speaks softly into it, not audible by anyone nearby."
     },
     commPanelDimensions = { x = 420, y = 530 },
     minimapicon = {

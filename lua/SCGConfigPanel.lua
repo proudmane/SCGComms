@@ -31,7 +31,7 @@ function Me:ResetAccent()
   w["update_patrol_offense_config"]:SetText(Main.db.char.patrolComms.updatePatrolOffense)
   w["update_patrol_asst_config"]:SetText(Main.db.char.patrolComms.updatePatrolAsst)
   w["end_patrol_config"]:SetText(Main.db.char.patrolComms.endPatrol)
-
+  w["emote_config"]:SetText(Main.db.char.patrolComms.emote)
 end
 
 -------------------------------------------------------------------------------
@@ -86,6 +86,7 @@ function Me:ConfigBoxGroup(parent_key)
   Me:UpdatePatrolOffenseConfig(my_key)
   Me:UpdatePatrolAsstConfig(my_key)
   Me:EndPatrolConfig(my_key)
+  Me:EmoteConfig(my_key)
   Me:ResetAccentButton(my_key)
 
   w[parent_key]:AddChild(w[my_key])
@@ -199,6 +200,22 @@ function Me:EnableCommCheck(parent_key)
 
   w[my_key]:SetCallback("OnValueChanged",
       function(widget, event, value) Me:ToggleComms(value) end)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:EmoteConfig(parent_key)
+  local my_key = "emote_config"
+  w[my_key] = AceGUI:Create("EditBox")
+  w[my_key]:SetFullWidth(true)
+  w[my_key]:SetLabel("/e emote when updating patrol")
+  w[my_key]:SetText(Main.db.char.patrolComms.emote)
+
+  w[my_key]:SetCallback("OnEnterPressed",
+      function(widget, event, text)
+        Main.db.char.patrolComms.emote = text
+        w["config_frame"]:SetStatusText("Emote updated successfully.")
+      end)
 
   w[parent_key]:AddChild(w[my_key])
 end

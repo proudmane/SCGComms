@@ -16,6 +16,7 @@ local dest_loc = ""
 local current_loc = ""
 local offense = ""
 local enabled = true
+local gender
 local all_loc_dropdowns = {
   "start_loc_dropdown", "end_loc_dropdown", "current_loc_dropdown",
   "next_loc_dropdown", "current_loc_dropdown_desc"
@@ -25,6 +26,11 @@ local optional_locs = {
   harbor = false,
   gy = false
 }
+if UnitSex("player") == 2 then
+  gender = "his"
+else
+  gender = "her"
+end
 
 local w = {}
 
@@ -33,7 +39,9 @@ local w = {}
 -------------------------------------------------------------------------------
 function Me:SendComm(comm_string)
   if enabled == true then
+    local emote = Me:SubValues(Main.db.char.patrolComms.emote)
     SendChatMessage(comm_string,"OFFICER" ,"COMMON")
+    SendChatMessage(emote, "EMOTE")
   else
     print("Comm String: "..comm_string)
   end
@@ -77,6 +85,7 @@ function Me:SubValues(comm_string)
   comm_string = comm_string:gsub("%[offense%]", offense)
   comm_string = comm_string:gsub("%[current_location%]", current_loc)
   comm_string = comm_string:gsub("%[time%]", time_string)
+  comm_string = comm_string:gsub("%[gender%]", gender)
 
   return comm_string
 end
