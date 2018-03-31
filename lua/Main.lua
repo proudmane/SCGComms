@@ -78,8 +78,8 @@ RANKS = {
 }
 
 LOCATIONS = {
-  "Stockades", "Blue Recluse", "Lion's Rest", "Cathedral Square",
-   "Shady Lady", "Golden Keg", "Pig and Whistle", "Trade District"
+  "Lion's Rest", "Cathedral Square", "Shady Lady", "Golden Keg",
+  "Pig and Whistle", "Trade District", "Blue Recluse", "Stockades"
 }
 
 function Main:Locations()

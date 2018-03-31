@@ -20,6 +20,11 @@ local all_loc_dropdowns = {
   "start_loc_dropdown", "end_loc_dropdown", "current_loc_dropdown",
   "next_loc_dropdown", "current_loc_dropdown_desc"
 }
+local optional_locs = {
+  lamb = false,
+  harbor = false,
+  gy = false
+}
 
 local w = {}
 
@@ -113,14 +118,18 @@ function Me:ToggleComms(value)
 end
 
 function Me:AddLamb()
-  table.insert(LOCATIONS, 3, "Lamb")
+  local index = SCGComms:LocationsIndex()
+  table.insert(LOCATIONS, index["Blue Recluse"] + 1, "Slaughtered Lamb")
+  optional_locs["lamb"] = true
   for _, v in pairs(all_loc_dropdowns) do
     w[v]:SetList(LOCATIONS)
   end
 end
 
 function Me:RemoveLamb()
-  table.remove(LOCATIONS, 3)
+  local index = SCGComms:LocationsIndex()
+  table.remove(LOCATIONS, index["Slaughtered Lamb"])
+  optional_locs["lamb"] = false
   for _, v in pairs(all_loc_dropdowns) do
     w[v]:SetList(LOCATIONS)
   end
@@ -129,6 +138,7 @@ end
 function Me:AddHarbor()
   local index = SCGComms:LocationsIndex()
   table.insert(LOCATIONS, index["Lion's Rest"] + 1, "Harbor")
+  optional_locs["harbor"] = true
   for _, v in pairs(all_loc_dropdowns) do
     w[v]:SetList(LOCATIONS)
   end
@@ -137,6 +147,7 @@ end
 function Me:RemoveHarbor()
   local index = SCGComms:LocationsIndex()
   table.remove(LOCATIONS, index["Harbor"])
+  optional_locs["harbor"] = false
   for _, v in pairs(all_loc_dropdowns) do
     w[v]:SetList(LOCATIONS)
   end
@@ -144,7 +155,8 @@ end
 
 function Me:AddGraveyard()
   local index = SCGComms:LocationsIndex()
-  table.insert(LOCATIONS, index["Cathedral Square"] + 1, "Graveyard")
+  table.insert(LOCATIONS, index["Cathedral Square"], "Graveyard")
+  optional_locs["gy"] = true
   for _, v in pairs(all_loc_dropdowns) do
     w[v]:SetList(LOCATIONS)
   end
@@ -153,6 +165,7 @@ end
 function Me:RemoveGraveyard()
   local index = SCGComms:LocationsIndex()
   table.remove(LOCATIONS, index["Graveyard"])
+  optional_locs["gy"] = false
   for _, v in pairs(all_loc_dropdowns) do
     w[v]:SetList(LOCATIONS)
   end
@@ -378,6 +391,7 @@ end
 function Me:CommFrame()
   local my_key = "comm_frame"
   w[my_key] = AceGUI:Create("Frame")
+
   w[my_key]:SetTitle("SWCG Comms")
   w[my_key]:SetWidth(Main.db.char.commPanelDimensions.x)
   w[my_key]:SetHeight(Main.db.char.commPanelDimensions.y)
@@ -392,6 +406,7 @@ end
 function Me:ScrollFrame(parent_key)
   local my_key = "scroll_frame"
   w[my_key] = AceGUI:Create("ScrollFrame")
+
   w[my_key]:SetLayout("Flow")
   w[my_key]:SetFullWidth(true)
   w[my_key]:SetFullHeight(true)
@@ -408,6 +423,7 @@ end
 function Me:StartPatrolGroup(parent_key)
   local my_key = "start_patrol_group"
   w[my_key] = AceGUI:Create("InlineGroup")
+
   w[my_key]:SetTitle("Start Patrol")
   w[my_key]:SetLayout("List")
   w[my_key]:SetFullWidth(true)
@@ -421,6 +437,7 @@ end
 function Me:UpdatePatrolGroup(parent_key)
   local my_key = "update_patrol_group"
   w[my_key] = AceGUI:Create("InlineGroup")
+
   w[my_key]:SetTitle("Update Patrol")
   w[my_key]:SetFullWidth(true)
   w[my_key]:SetLayout("Flow")
@@ -437,7 +454,7 @@ function Me:DescribePatrolGroup(parent_key)
   local my_key = "describe_group"
   w[my_key] = AceGUI:Create("InlineGroup")
   w[my_key]:SetTitle("Describe the Situation")
-  -- w[my_key]:SetWidth(350)
+
   w[my_key]:SetFullWidth(true)
   w[my_key]:SetLayout("Flow")
 
@@ -451,6 +468,7 @@ end
 function Me:StartBtnGroup(parent_key)
   local my_key = "start_btn_group"
   w[my_key] = AceGUI:Create("SimpleGroup")
+
   w[my_key]:SetLayout("Flow")
   w[my_key]:SetFullWidth(true)
 
@@ -464,6 +482,7 @@ end
 function Me:ClockRadioGroup(parent_key)
   local my_key = "clock_radio_group"
   w[my_key] = AceGUI:Create("SimpleGroup")
+
   w[my_key]:SetLayout("Flow")
   w[my_key]:SetFullWidth(true)
 
@@ -517,6 +536,7 @@ end
 function Me:LeaderName(parent_key) -- pl_name
   local my_key = "pl_name_editbox"
   w[my_key] = AceGUI:Create("EditBox")
+
   w[my_key]:SetLabel("Leader Name")
   w[my_key]:SetWidth(Main.db.char.commPanelDimensions.x - 210)
   w[my_key]:DisableButton(true)
@@ -528,6 +548,7 @@ end
 function Me:RankDropdown(parent_key)
   local my_key = "rank_dropdown"
   w[my_key] = AceGUI:Create("Dropdown")
+
   w[my_key]:SetWidth(130)
   w[my_key]:SetText("Select...")
   w[my_key]:SetList(RANKS)
@@ -543,6 +564,7 @@ function Me:OptionalLambCheck(parent_key)
   local my_key = "optional_lamb_check"
   w[my_key] = AceGUI:Create("CheckBox")
 
+  w[my_key]:SetValue(optional_locs["lamb"])
   w[my_key]:SetType("checkbox")
   w[my_key]:SetLabel("Lamb")
   w[my_key]:SetWidth(100)
@@ -562,6 +584,7 @@ function Me:OptionalHarborCheck(parent_key)
   local my_key = "optional_harbor_check"
   w[my_key] = AceGUI:Create("CheckBox")
 
+  w[my_key]:SetValue(optional_locs["harbor"])
   w[my_key]:SetType("checkbox")
   w[my_key]:SetLabel("Harbor")
   w[my_key]:SetWidth(100)
@@ -581,6 +604,7 @@ function Me:OptionalGraveyardCheck(parent_key)
   local my_key = "optional_graveyard_check"
   w[my_key] = AceGUI:Create("CheckBox")
 
+  w[my_key]:SetValue(optional_locs["gy"])
   w[my_key]:SetType("checkbox")
   w[my_key]:SetLabel("Graveyard")
   w[my_key]:SetWidth(100)
@@ -599,6 +623,7 @@ end
 function Me:PatrolTypeText(parent_key) -- label
   local my_key = "patrol_type_text"
   w[my_key] = AceGUI:Create("Label")
+
   w[my_key]:SetText("Select Patrol Type:")
   w[my_key]:SetFullWidth(true)
 
@@ -608,6 +633,7 @@ end
 function Me:ClockwiseRadio(parent_key)
   local my_key = "clockwise_radio"
   w[my_key] = AceGUI:Create("CheckBox")
+
   w[my_key]:SetLabel("Clockwise")
   w[my_key]:SetType("radio")
   w[my_key]:SetWidth(100)
@@ -622,6 +648,7 @@ end
 function Me:CounterRadio(parent_key)
   local my_key = "counter_clock_radio"
   w[my_key] = AceGUI:Create("CheckBox")
+
   w[my_key]:SetLabel("Counter")
   w[my_key]:SetType("radio")
   w[my_key]:SetWidth(100)
@@ -635,6 +662,7 @@ end
 function Me:StartPatrolBtn(parent_key)
   local my_key = "start_patrol_button"
   w[my_key] = AceGUI:Create("Button")
+
   w[my_key]:SetText("Start Patrol")
   w[my_key]:SetWidth(110)
 
@@ -647,6 +675,7 @@ end
 function Me:EndPatrolBtn(parent_key)
   local my_key = "end_patrol_button"
   w[my_key] = AceGUI:Create("Button")
+
   w[my_key]:SetText("End Patrol")
   w[my_key]:SetWidth(110)
   w[my_key]:SetDisabled(true)
@@ -660,6 +689,7 @@ end
 function Me:EnableCommCheck(parent_key)
   local my_key = "enable_comm_checkbox"
   w[my_key] = AceGUI:Create("CheckBox")
+
   w[my_key]:SetLabel("Enable Comms")
   w[my_key]:SetWidth(120)
   w[my_key]:ToggleChecked(Main.db.char.patrolComms.enabled)
@@ -673,6 +703,7 @@ end
 function Me:StartLocDropdown(parent_key)
   local my_key = "start_loc_dropdown"
   w[my_key] = AceGUI:Create("Dropdown")
+
   w[my_key]:SetText("Select...")
   w[my_key]:SetList(LOCATIONS)
   w[my_key]:SetLabel("Start Location")
@@ -687,6 +718,7 @@ end
 function Me:NextLocDropdown(parent_key)
   local my_key = "next_loc_dropdown"
   w[my_key] = AceGUI:Create("Dropdown")
+
   w[my_key]:SetText("Select...")
   w[my_key]:SetList(LOCATIONS)
   w[my_key]:SetLabel("Next Location")
@@ -701,6 +733,7 @@ end
 function Me:EndLocDropdown(parent_key)
   local my_key = "end_loc_dropdown"
   w[my_key] = AceGUI:Create("Dropdown")
+
   w[my_key]:SetText("Select...")
   w[my_key]:SetList(LOCATIONS)
   w[my_key]:SetLabel("End Location")
@@ -716,6 +749,7 @@ end
 function Me:ClearCheckBox(parent_key)
   local my_key = "clear_checkbox"
   w[my_key] = AceGUI:Create("CheckBox")
+
   w[my_key]:SetLabel("Clear?")
   w[my_key]:SetWidth(75)
   w[my_key]:SetType("checkbox")
@@ -730,6 +764,7 @@ end
 function Me:OffenseDropdown(parent_key)
   local my_key = "offense_dropdown"
   w[my_key] = AceGUI:Create("Dropdown")
+
   w[my_key]:SetText("Select...")
   w[my_key]:SetList(OFFENSES)
   w[my_key]:SetLabel("What offense are you investigating")
@@ -744,6 +779,7 @@ end
 function Me:CurrentLocationDropdown(parent_key)
   local my_key = "current_loc_dropdown"
   w[my_key] = AceGUI:Create("Dropdown")
+
   w[my_key]:SetText("Select...")
   w[my_key]:SetList(LOCATIONS)
   w[my_key]:SetLabel("Current Location")
@@ -758,6 +794,7 @@ end
 function Me:CurrentLocationDropdownDescribe(parent_key)
   local my_key = "current_loc_dropdown_desc"
   w[my_key] = AceGUI:Create("Dropdown")
+
   w[my_key]:SetText("Select...")
   w[my_key]:SetList(LOCATIONS)
   w[my_key]:SetLabel("Current Location")
@@ -773,6 +810,7 @@ end
 function Me:AssistanceCheckBox(parent_key)
   local my_key = "assistance_checkbox"
   w[my_key] = AceGUI:Create("CheckBox")
+
   w[my_key]:SetLabel("Do You Require Assistance?")
   w[my_key]:SetType("checkbox")
   w[my_key]:SetDisabled(true)
@@ -783,6 +821,7 @@ end
 function Me:UpdatePatrolBtnUpdate(parent_key)
   local my_key = "update_patrol_button_update"
   w[my_key] = AceGUI:Create("Button")
+
   w[my_key]:SetText("Update Patrol")
   w[my_key]:SetWidth(110)
 
@@ -795,6 +834,7 @@ end
 function Me:UpdatePatrolBtnDescribe(parent_key)
   local my_key = "update_patrol_button_describe"
   w[my_key] = AceGUI:Create("Button")
+
   w[my_key]:SetText("Update Patrol")
   w[my_key]:SetWidth(110)
   w[my_key]:SetDisabled(true)
