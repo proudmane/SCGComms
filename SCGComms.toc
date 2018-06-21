@@ -2,7 +2,7 @@
 ## Title: SCGComms
 ## Notes: Stormwind City Comms
 ## Author: Darosa-MoonGuard
-## Version: 1.1.2-beta
+## Version: 1.2-beta
 ## SavedVariables: SCGCommsSaved
 
 embeds.xml
