@@ -41,7 +41,12 @@ local defaults = {
       end_loc = "",
       dest_loc = "",
       current_loc = "",
-      offense = ""
+      offense = "",
+      optional_locs = {
+        lamb = false,
+        harbor = false,
+        gy = false
+      }
     },
     minimapicon = {
       hide = false
