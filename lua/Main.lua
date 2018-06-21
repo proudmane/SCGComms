@@ -93,6 +93,11 @@ RANKS = {
   "Master Sergeant", "Lieutenant", "Commander"
 }
 
+ORIG_LOCATIONS = {
+  "Lion's Rest", "Cathedral Square", "Shady Lady", "Golden Keg",
+  "Pig and Whistle", "Trade District", "Blue Recluse", "Stockades"
+}
+
 LOCATIONS = {
   "Lion's Rest", "Cathedral Square", "Shady Lady", "Golden Keg",
   "Pig and Whistle", "Trade District", "Blue Recluse", "Stockades"
@@ -119,6 +124,15 @@ function Main:LocationsIndex()
   end
 
   return loc
+end
+
+function Main:RanksIndex()
+  local rank = {}
+  for k,v in pairs(RANKS) do
+    rank[v] = k
+  end
+
+  return rank
 end
 
 OFFENSES = {

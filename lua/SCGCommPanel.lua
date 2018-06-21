@@ -93,6 +93,8 @@ end
 function Me:ClearAttrs()
   Main.db.char.patrolInfo = SCGComms_defaults.char.patrolInfo
 
+  LOCATIONS = ORIG_LOCATIONS
+
   local dropdowns = {
     "start_loc_dropdown", "end_loc_dropdown",
     "current_loc_dropdown", "next_loc_dropdown", "offense_dropdown",
@@ -101,14 +103,12 @@ function Me:ClearAttrs()
   for _, v in pairs(dropdowns) do
     w[v]:SetValue(nil)
     w[v]:SetText("Select...")
+    w[v]:SetList(LOCATIONS)
   end
   w["pl_name_editbox"]:SetText(Main.db.char.patrolInfo.pl_name)
   w["optional_lamb_check"]:SetValue(Main.db.char.patrolInfo.optional_locs["lamb"])
   w["optional_harbor_check"]:SetValue(Main.db.char.patrolInfo.optional_locs["harbor"])
   w["optional_graveyard_check"]:SetValue(Main.db.char.patrolInfo.optional_locs["gy"])
-  Me:RemoveLamb()
-  Me:RemoveHarbor()
-  Me:RemoveGraveyard()
 end
 
 function Me:ToggleComms(value)
@@ -393,8 +393,16 @@ function Me:CommFrame()
 
   w[my_key]:SetTitle("SWCG Comms")
   w[my_key]:SetWidth(420)
-  w[my_key]:SetHeight(530)
+  w[my_key]:SetHeight(300)
   w[my_key]:SetLayout("Fill")
+  if Main.db.char.patrolInfo.inProgress == true then
+    w[my_key]:SetStatusText("Patrol in Progress. Current Location: "..
+      Main.db.char.patrolInfo.current_loc..". Click 'End Patrol' to end "..
+    "the patrol.")
+  else
+    w[my_key]:SetStatusText("No patrol currently in progress. "..
+    "Click 'Start Patrol' to start a patrol.")
+  end
 
   w[my_key]:SetCallback("OnClose", function() Main.CommFrame = nil end)
 
@@ -537,7 +545,7 @@ function Me:LeaderName(parent_key) -- pl_name
   w[my_key] = AceGUI:Create("EditBox")
 
   w[my_key]:SetLabel("Leader Name")
-  w[my_key]:SetWidth(530 - 210)
+  w[my_key]:SetWidth(530 - 100)
   w[my_key]:SetText(Main.db.char.patrolInfo.pl_name)
   w[my_key]:DisableButton(true)
   w[my_key]:SetCallback("OnTextChanged",
@@ -553,6 +561,11 @@ function Me:RankDropdown(parent_key)
   w[my_key]:SetText("Select...")
   w[my_key]:SetList(RANKS)
   w[my_key]:SetLabel("Leader Rank")
+
+  if Main.db.char.patrolInfo.inProgress == true then
+    local index = SCGComms:RanksIndex()
+    w[my_key]:SetValue(index[Main.db.char.patrolInfo.rank])
+  end
 
   w[my_key]:SetCallback("OnValueChanged",
     function(widget, event, value) Main.db.char.patrolInfo.rank = RANKS[value] end)
@@ -860,7 +873,7 @@ function Me:UpdatePatrolBtnUpdate(parent_key)
   w[my_key] = AceGUI:Create("Button")
 
   w[my_key]:SetText("Update Patrol")
-  w[my_key]:SetWidth(110)
+  w[my_key]:SetWidth(130)
 
   w[my_key]:SetCallback("OnClick",
       function(widget, event, value) Me:OnUpdatePatrolClicked() end)
@@ -873,7 +886,7 @@ function Me:UpdatePatrolBtnDescribe(parent_key)
   w[my_key] = AceGUI:Create("Button")
 
   w[my_key]:SetText("Update Patrol")
-  w[my_key]:SetWidth(110)
+  w[my_key]:SetWidth(130)
   w[my_key]:SetDisabled(true)
 
   w[my_key]:SetCallback("OnClick",
