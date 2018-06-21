@@ -32,6 +32,17 @@ local defaults = {
       endPatrol = "[rank] [name]'s patrol ending at [end_location]. [time] hours.",
       emote = "pulls out [gender] comm, and speaks softly into it, not audible by anyone nearby."
     },
+    patrolInfo = {
+      inProgress = false,
+      pl_name = "",
+      rank = "",
+      patrol_type = "clockwise",
+      start_loc = "",
+      end_loc = "",
+      dest_loc = "",
+      current_loc = "",
+      offense = ""
+    },
     minimapicon = {
       hide = false
     }

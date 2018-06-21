@@ -3,7 +3,6 @@ local Main = SCGComms
 local Me = {}
 
 Main.CommPanel = Me
-
 -------------------------------------------------------------------------------
 -- attributes
 -------------------------------------------------------------------------------
@@ -48,7 +47,6 @@ function Me:SendComm(comm_string)
 end
 
 function Me:BuildTimeString()
-  local db = Main.db.char.patrolComms
   local hours, minutes = GetGameTime();
   local time_string = hours..":"..minutes
 
@@ -189,8 +187,7 @@ function Me:OnStartPatrolClicked(widget)
     w["comm_frame"]:SetStatusText("Please enter your starting location.")
   else
     w["comm_frame"]:SetStatusText("P")
-    local db = Main.db.char.patrolComms
-    local comm_string = Me:SubValues(db.startPatrol)
+    local comm_string = Me:SubValues(Main.db.char.patrolComms.startPatrol)
 
     if Main.debug == true then
       print("Comm String: "..comm_string)
@@ -236,17 +233,16 @@ function Me:OnUpdatePatrolClicked()
   elseif dest_loc == "" then
     w["comm_frame"]:SetStatusText("Please enter your next location.")
   else
-    local db = Main.db.char.patrolComms
     local clear_value = w["clear_checkbox"]:GetValue()
     local asst_value = w["assistance_checkbox"]:GetValue()
     local comm_string
 
     if clear_value == true then
-      comm_string = Me:SubValues(db.updatePatrolClear)
+      comm_string = Me:SubValues(Main.db.char.patrolComms.updatePatrolClear)
     elseif asst_value == true then
-      comm_string = Me:SubValues(db.updatePatrolAsst)
+      comm_string = Me:SubValues(Main.db.char.patrolComms.updatePatrolAsst)
     else
-      comm_string = Me:SubValues(db.updatePatrolOffense)
+      comm_string = Me:SubValues(Main.db.char.patrolComms.updatePatrolOffense)
     end
 
     if Main.debug == true then
@@ -293,17 +289,16 @@ function Me:OnUpdatePatrolDescribeClicked()
   elseif offense == "" then
     w["comm_frame"]:SetStatusText("Please enter your the offense you're handling.")
   else
-    local db = Main.db.char.patrolComms
     local clear_value = w["clear_checkbox"]:GetValue()
     local asst_value = w["assistance_checkbox"]:GetValue()
     local comm_string
 
     if clear_value == true then
-      comm_string = Me:SubValues(db.updatePatrolClear)
+      comm_string = Me:SubValues(Main.db.char.patrolComms.updatePatrolClear)
     elseif asst_value == true then
-      comm_string = Me:SubValues(db.updatePatrolAsst)
+      comm_string = Me:SubValues(Main.db.char.patrolComms.updatePatrolAsst)
     else
-      comm_string = Me:SubValues(db.updatePatrolOffense)
+      comm_string = Me:SubValues(Main.db.char.patrolComms.updatePatrolOffense)
     end
 
     if Main.debug == true then
@@ -321,8 +316,7 @@ function Me:OnEndPatrolClicked()
   elseif end_loc == "" then
     w["comm_frame"]:SetStatusText("Please enter your ending location.")
   else
-    local db = Main.db.char.patrolComms
-    local comm_string = Me:SubValues(db.endPatrol)
+    local comm_string = Me:SubValues(Main.db.char.patrolComms.endPatrol)
     w["assistance_checkbox"]:SetValue(false)
     w["clear_checkbox"]:SetValue(true)
 
