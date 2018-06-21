@@ -224,8 +224,6 @@ function Me:OnStartPatrolClicked(widget)
 
     w["end_loc_dropdown"]:SetValue(w["start_loc_dropdown"]:GetValue())
     w["end_loc_dropdown"]:SetText(start_loc)
-    Me:ToggleGroups(start_group, true)
-    Me:ToggleGroups(end_group, false)
     end_loc = start_loc
   end
 end
@@ -343,8 +341,6 @@ function Me:OnEndPatrolClicked()
       "current_loc_dropdown_desc"
     }
     Me:ClearAttrs()
-    Me:ToggleGroups(start_group, false)
-    Me:ToggleGroups(end_group, true)
   end
 end
 
@@ -404,8 +400,8 @@ function Me:CommFrame()
   w[my_key] = AceGUI:Create("Frame")
 
   w[my_key]:SetTitle("SWCG Comms")
-  w[my_key]:SetWidth(Main.db.char.commPanelDimensions.x)
-  w[my_key]:SetHeight(Main.db.char.commPanelDimensions.y)
+  w[my_key]:SetWidth(420)
+  w[my_key]:SetHeight(530)
   w[my_key]:SetLayout("Fill")
 
   w[my_key]:SetCallback("OnClose", function() Main.CommFrame = nil end)
@@ -549,7 +545,7 @@ function Me:LeaderName(parent_key) -- pl_name
   w[my_key] = AceGUI:Create("EditBox")
 
   w[my_key]:SetLabel("Leader Name")
-  w[my_key]:SetWidth(Main.db.char.commPanelDimensions.x - 210)
+  w[my_key]:SetWidth(530 - 210)
   w[my_key]:DisableButton(true)
   w[my_key]:SetCallback("OnTextChanged",
       function(widget, event, text) pl_name = text end)
@@ -689,7 +685,6 @@ function Me:EndPatrolBtn(parent_key)
 
   w[my_key]:SetText("End Patrol")
   w[my_key]:SetWidth(110)
-  w[my_key]:SetDisabled(true)
 
   w[my_key]:SetCallback("OnClick",
       function() Me:OnEndPatrolClicked() end)
@@ -749,7 +744,6 @@ function Me:EndLocDropdown(parent_key)
   w[my_key]:SetList(LOCATIONS)
   w[my_key]:SetLabel("End Location")
   w[my_key]:SetWidth(130)
-  w[my_key]:SetDisabled(true)
 
   w[my_key]:SetCallback("OnValueChanged",
       function(widget, event, value) end_loc = LOCATIONS[value] end)
@@ -824,7 +818,6 @@ function Me:AssistanceCheckBox(parent_key)
 
   w[my_key]:SetLabel("Do You Require Assistance?")
   w[my_key]:SetType("checkbox")
-  w[my_key]:SetDisabled(true)
 
   w[parent_key]:AddChild(w[my_key])
 end

@@ -32,7 +32,6 @@ local defaults = {
       endPatrol = "[rank] [name]'s patrol ending at [end_location]. [time] hours.",
       emote = "pulls out [gender] comm, and speaks softly into it, not audible by anyone nearby."
     },
-    commPanelDimensions = { x = 420, y = 530 },
     minimapicon = {
       hide = false
     }

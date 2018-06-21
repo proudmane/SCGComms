@@ -41,8 +41,8 @@ function Me:ConfigFrame()
   local my_key = "config_frame"
   w[my_key] = AceGUI:Create("Frame")
   w[my_key]:SetTitle("SWCG Comms Config")
-  w[my_key]:SetWidth(Main.db.char.commPanelDimensions.x)
-  w[my_key]:SetHeight(Main.db.char.commPanelDimensions.y)
+  w[my_key]:SetWidth(420)
+  w[my_key]:SetHeight(530)
   w[my_key]:SetLayout("List")
 
   Main.ConfigFrame = w[my_key]
