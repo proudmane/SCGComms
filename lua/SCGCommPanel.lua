@@ -103,7 +103,9 @@ function Me:ClearAttrs()
   for _, v in pairs(dropdowns) do
     w[v]:SetValue(nil)
     w[v]:SetText("Select...")
-    w[v]:SetList(LOCATIONS)
+    if v ~= "rank_dropdown" then
+      w[v]:SetList(LOCATIONS)
+    end
   end
   w["pl_name_editbox"]:SetText(Main.db.char.patrolInfo.pl_name)
   w["optional_lamb_check"]:SetValue(Main.db.char.patrolInfo.optional_locs["lamb"])
