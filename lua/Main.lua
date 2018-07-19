@@ -60,7 +60,7 @@ SCGComms_defaults = defaults
 -- Initialization and Post Initialization
 -------------------------------------------------------------------------------
 function Main:OnInitialize()
-  Main.MinimapButton.Init()
+  -- Main.MinimapButton.Init()
   if Main.debug == true then
     print("SCGComms Debug Mode: On")
   end
@@ -69,7 +69,7 @@ end
 
 function Main:OnEnable()
   Main:CreateDB()
-  Main.MinimapButton.OnLoad()
+  -- Main.MinimapButton.OnLoad()
 end
 
 function Main:SetDebug(bool)

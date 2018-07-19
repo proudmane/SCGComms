@@ -1,12 +1,11 @@
-## Interface: 70300
+## Interface: 80000
 ## Title: SCGComms
 ## Notes: Stormwind City Comms
 ## Author: Darosa-MoonGuard
-## Version: 1.2-beta
+## Version: 8.0-beta
 ## SavedVariables: SCGCommsSaved
 
 embeds.xml
 lua\Main.lua
-lua\minimapbutton.lua
 lua\SCGConfigPanel.lua
 lua\SCGCommPanel.lua
