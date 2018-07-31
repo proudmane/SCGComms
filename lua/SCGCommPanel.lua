@@ -35,7 +35,7 @@ local w = {}
 function Me:SendComm(comm_string)
   if enabled == true then
     local emote = Me:SubValues(Main.db.char.patrolComms.emote)
-    SendChatMessage(comm_string, "CHANNEL", 7, GetChannelName("swradio"))
+    C_Club.SendMessage("345393461", "1", comm_string)
     SendChatMessage(emote, "EMOTE", nil, nil)
   else
     print("Comm String: "..comm_string)
