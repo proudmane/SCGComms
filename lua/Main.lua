@@ -55,12 +55,19 @@ local defaults = {
 }
 
 SCGComms_defaults = defaults
+-------------------------------------------------------------------------------
+-- TODO:
+  -- Create print button to print all values for testing and debugging purposes DONE
+  -- Restore minimap button DONE
+  -- Create smaller quick update frame
+  -- Fix optional location bug
+-------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
 -- Initialization and Post Initialization
 -------------------------------------------------------------------------------
 function Main:OnInitialize()
-  -- Main.MinimapButton.Init()
+  Main.MinimapButton.Init()
   if Main.debug == true then
     print("SCGComms Debug Mode: On")
   end
@@ -69,7 +76,7 @@ end
 
 function Main:OnEnable()
   Main:CreateDB()
-  -- Main.MinimapButton.OnLoad()
+  Main.MinimapButton.OnLoad()
 end
 
 function Main:SetDebug(bool)
