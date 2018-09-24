@@ -4,11 +4,19 @@ local Me = {}
 
 SCGComms.Testing = Me
 
+-------------------------------------------------------------------------------
+-- Utility Functions
+-------------------------------------------------------------------------------
 function Me:PrintValues()
   -- loop through everything in db, print each value on new line
   -- print any value that isnt stored in DB.
-  local info = table.tostring(Main.db.char)
-  print("Patrol Values: "..info)
+  local info = table.tostring(Main.db.char.patrolInfo)
+  local comms = table.tostring(Main.db.char.patrolComms)
+  local map = table.tostring(Main.db.char.minimapicon)
+  print("Patrol Values:")
+  print("Patrol Information: "..info)
+  print("Patrol Comms: "..comms)
+  print("Minimap: "..map)
 end
 
 function Me:PrintClubs()
@@ -50,3 +58,11 @@ function table.tostring( tbl )
   end
   return "{" .. table.concat( result, "," ) .. "}"
 end
+
+-------------------------------------------------------------------------------
+-- Frame Constructor
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+-- Events
+-------------------------------------------------------------------------------
