@@ -10,4 +10,4 @@ lua\Main.lua
 lua\SCGConfigPanel.lua
 lua\SCGCommPanel.lua
 lua\MinimapButton.lua
-lua\Testing.lua
+lua\DebugPanel.lua

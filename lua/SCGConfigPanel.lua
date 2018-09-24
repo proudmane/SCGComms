@@ -34,6 +34,15 @@ function Me:ResetAccent()
   w["emote_config"]:SetText(Main.db.char.patrolComms.emote)
 end
 
+function Me:OpenDebugger()
+  if Main.DebugPanel.GetOpen() == false then
+    Main.DebugPanel.Show()
+    w["config_frame"]:SetStatusText("Debugger Opened.")
+  else
+    w["config_frame"]:SetStatusText("Debugger Panel Already Open!")
+  end
+end
+
 -------------------------------------------------------------------------------
 -- Constructor Functions
 -------------------------------------------------------------------------------
@@ -46,9 +55,9 @@ function Me:ConfigFrame()
   w[my_key]:SetLayout("List")
 
   Main.ConfigFrame = w[my_key]
+  Me:ScrollFrame(my_key)
 
   w[my_key]:SetCallback("OnClose", function() Main.ConfigFrame = nil end)
-  Me:ScrollFrame(my_key)
 end
 
 function Me:ScrollFrame(parent_key)
@@ -60,6 +69,8 @@ function Me:ScrollFrame(parent_key)
 
   Me:ConfigTextGroup(my_key)
   Me:ConfigBoxGroup(my_key)
+  Me:ResetAccentButton(my_key)
+  Me:DebuggerButton(my_key)
 
   w[parent_key]:AddChild(w[my_key])
 end
@@ -87,7 +98,6 @@ function Me:ConfigBoxGroup(parent_key)
   Me:UpdatePatrolAsstConfig(my_key)
   Me:EndPatrolConfig(my_key)
   Me:EmoteConfig(my_key)
-  Me:ResetAccentButton(my_key)
 
   w[parent_key]:AddChild(w[my_key])
 end
@@ -224,9 +234,22 @@ function Me:ResetAccentButton(parent_key)
   local my_key = "reset_accent_button"
   w[my_key] = AceGUI:Create("Button")
   w[my_key]:SetText("Reset Accent")
+  w[my_key]:SetWidth(130)
 
   w[my_key]:SetCallback("OnClick",
       function() Me:ResetAccent() end)
+
+  w[parent_key]:AddChild(w[my_key])
+end
+
+function Me:DebuggerButton(parent_key)
+  local my_key = "debugger_button"
+  w[my_key] = AceGUI:Create("Button")
+  w[my_key]:SetText("Open Debugger")
+  w[my_key]:SetWidth(130)
+
+  w[my_key]:SetCallback("OnClick",
+      function() Me:OpenDebugger() end)
 
   w[parent_key]:AddChild(w[my_key])
 end
