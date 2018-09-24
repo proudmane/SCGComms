@@ -68,6 +68,7 @@ SCGComms_defaults = defaults
 -------------------------------------------------------------------------------
 function Main:OnInitialize()
   Main.MinimapButton.Init()
+  Main.UpdatePanel.Show()
   if Main.debug == true then
     print("SCGComms Debug Mode: On")
   end

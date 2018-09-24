@@ -9,5 +9,6 @@ embeds.xml
 lua\Main.lua
 lua\SCGConfigPanel.lua
 lua\SCGCommPanel.lua
+lua\UpdatePanel.lua
 lua\MinimapButton.lua
 lua\Testing.lua
