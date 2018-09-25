@@ -21,6 +21,7 @@ function Me:StringifyValues()
 end
 
 function Me:PrintClubs()
+  -- convenience method kept in for if the Community ID ever changes
   w["config_text"]:SetText(table.tostring(C_Club.GetStreams("345393461")))
 end
 
@@ -78,7 +79,6 @@ function Me:DebugFrame()
   w[my_key]:SetCallback("OnClose", function() open = false end)
 
   Me:ScrollFrame(my_key)
-  open = true
 end
 
 function Me:ScrollFrame(parent_key)
@@ -150,4 +150,5 @@ end
 -------------------------------------------------------------------------------
 function Me.Show()
   Me:DebugFrame()
+  open = true
 end
