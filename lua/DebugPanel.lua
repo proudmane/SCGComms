@@ -14,8 +14,18 @@ function Me:StringifyValues()
   local info = table.tostring(Main.db.char.patrolInfo)
   local comms = table.tostring(Main.db.char.patrolComms)
   local map = table.tostring(Main.db.char.minimapicon)
-  local debug = "Patrol Information: "..info.."Patrol Config: "..comms..
-  "Minimap data: "..map
+  local locs = table.tostring(LOCATIONS)
+  local locs_index = table.tostring(Main:LocationsIndex())
+  local num_locs = Main.NumLocations()
+  local orig_locs = table.tostring(ORIG_LOCATIONS)
+  local ranks = table.tostring(RANKS)
+  local ranks_index = table.tostring(Main:RanksIndex())
+  local offenses = table.tostring(OFFENSES)
+
+  local debug = "```Patrol Information: "..info.."\n\nPatrol Config: "..comms..
+  "\n\nMinimap data: "..map.."\n\nLocations: "..locs.."\n\nLocations Index:"..locs_index..
+  "\n\nNumLocations: "..num_locs.."\n\nOrigLocations: "..orig_locs.."\n\nRanks: "..ranks..
+  "\n\nRanks Index: "..ranks_index.."\n\nOffenses: "..offenses.."```"
 
   return debug
 end
